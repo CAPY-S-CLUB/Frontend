@@ -1,4 +1,4 @@
-import ConnectButton from '@/components/ConnectButton'
+import GetStartedButton from '@/components/GetStartedButton'
 export default function Home() {
   return (
     <main className="relative min-h-screen text-white w-full">
@@ -18,9 +18,9 @@ export default function Home() {
         <p className="mt-4 text-xl text-gray-300 mb-8">
           The digital home for the worlds most discerning yacht owners. Connect your wallet to access the private community.
         </p>
-        <div>
-          {/* Reusable connect button */}
-          <ConnectButton />
+        <div className="relative z-30">
+          {/* Get Started button */}
+          <GetStartedButton />
         </div>
       </div>
     </main>

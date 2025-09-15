@@ -49,25 +49,35 @@ export function WalletProvider({ children }: WalletProviderProps) {
 
   // Conectar à carteira
   const connect = async () => {
-    if (!kit) {
-      alert('Stellar Wallets Kit não está inicializado.')
-      return
-    }
-
     setIsLoading(true)
     try {
-      const { address } = await kit.getAddress()
-      if (address) {
-        setPublicKey(address)
-        setIsWalletConnected(true)
-      } else {
-        throw new Error('Falha ao obter endereço da carteira')
+      // Verificar se há uma carteira real disponível
+      if (kit) {
+        try {
+          const { address } = await kit.getAddress()
+          if (address) {
+            setPublicKey(address)
+            setIsWalletConnected(true)
+            setIsLoading(false)
+            return
+          }
+        } catch (error) {
+          console.log('Carteira real não disponível, usando modo demo:', error)
+        }
       }
+      
+      // Fallback para modo demo
+      setTimeout(() => {
+        const demoAddress = 'GDEMO1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890'
+        setPublicKey(demoAddress)
+        setIsWalletConnected(true)
+        setIsLoading(false)
+        alert('Conectado com carteira demo! Endereço: ' + demoAddress.slice(0, 8) + '...' + demoAddress.slice(-8))
+      }, 1500)
     } catch (error) {
       console.error('Erro ao conectar à carteira:', error)
-      alert('Erro ao conectar à carteira. Tente novamente.')
-    } finally {
       setIsLoading(false)
+      alert('Erro ao conectar à carteira. Tente novamente.')
     }
   }
 
