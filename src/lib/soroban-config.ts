@@ -50,9 +50,9 @@ export const getSorobanConfig = () => {
     horizonUrl: process.env.NEXT_PUBLIC_HORIZON_URL || SOROBAN_CONFIG.HORIZON_URL,
     networkPassphrase: process.env.NEXT_PUBLIC_NETWORK_PASSPHRASE || SOROBAN_CONFIG.NETWORK_PASSPHRASE,
     baseFee: process.env.NEXT_PUBLIC_BASE_FEE || SOROBAN_CONFIG.BASE_FEE,
-    contracts: {
-      membership: process.env.NEXT_PUBLIC_MEMBERSHIP_CONTRACT || SOROBAN_CONFIG.CONTRACTS.MEMBERSHIP
-    }
+    membershipContractId: process.env.NEXT_PUBLIC_MEMBERSHIP_CONTRACT || SOROBAN_CONFIG.CONTRACTS.MEMBERSHIP,
+    badgesContractId: process.env.NEXT_PUBLIC_BADGES_CONTRACT || 'CBADGES_CONTRACT_ID_PLACEHOLDER',
+    adminSecretKey: process.env.ADMIN_SECRET_KEY || 'SADMIN_SECRET_KEY_PLACEHOLDER'
   }
 }
 

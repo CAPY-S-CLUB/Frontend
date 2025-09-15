@@ -1,7 +1,12 @@
 'use client'
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react'
-import { FreighterApi } from '@stellar/freighter-api'
+import { 
+  StellarWalletsKit, 
+  WalletNetwork, 
+  allowAllModules,
+  FREIGHTER_ID 
+} from '@creit.tech/stellar-wallets-kit'
 
 interface WalletContextType {
   isConnected: boolean
@@ -9,6 +14,7 @@ interface WalletContextType {
   connect: () => Promise<void>
   disconnect: () => void
   isLoading: boolean
+  kit: StellarWalletsKit | null
 }
 
 const WalletContext = createContext<WalletContextType | undefined>(undefined)
@@ -18,39 +24,45 @@ interface WalletProviderProps {
 }
 
 export function WalletProvider({ children }: WalletProviderProps) {
-  const [isConnected, setIsConnected] = useState(false)
+  const [isWalletConnected, setIsWalletConnected] = useState(false)
   const [publicKey, setPublicKey] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
+  const [kit, setKit] = useState<StellarWalletsKit | null>(null)
 
-  // Verificar se a carteira está disponível
-  const isFreighterAvailable = () => {
-    return typeof window !== 'undefined' && window.freighterApi
-  }
+  // Inicializar o Stellar Wallets Kit
+  useEffect(() => {
+    const initKit = () => {
+      try {
+        const walletKit = new StellarWalletsKit({
+          network: WalletNetwork.TESTNET,
+          selectedWalletId: FREIGHTER_ID,
+          modules: allowAllModules(),
+        })
+        setKit(walletKit)
+      } catch (error) {
+        console.error('Erro ao inicializar Stellar Wallets Kit:', error)
+      }
+    }
+
+    initKit()
+  }, [])
 
   // Conectar à carteira
   const connect = async () => {
-    if (!isFreighterAvailable()) {
-      alert('Freighter wallet não está disponível. Por favor, instale a extensão.')
+    if (!kit) {
+      alert('Stellar Wallets Kit não está inicializado.')
       return
     }
 
     setIsLoading(true)
     try {
-      const freighterApi = new FreighterApi()
-      
-      // Verificar se já está conectado
-      const isConnected = await freighterApi.isConnected()
-      if (isConnected) {
-        const publicKey = await freighterApi.getPublicKey()
-        setPublicKey(publicKey)
-        setIsConnected(true)
-        return
+      const { address } = await kit.getAddress()
+      if (address) {
+        setPublicKey(address)
+        setIsWalletConnected(true)
+      } else {
+        throw new Error('Falha ao obter endereço da carteira')
       }
-
-      // Solicitar conexão
-      const publicKey = await freighterApi.connect()
-      setPublicKey(publicKey)
-      setIsConnected(true)
     } catch (error) {
       console.error('Erro ao conectar à carteira:', error)
       alert('Erro ao conectar à carteira. Tente novamente.')
@@ -62,36 +74,16 @@ export function WalletProvider({ children }: WalletProviderProps) {
   // Desconectar da carteira
   const disconnect = () => {
     setPublicKey(null)
-    setIsConnected(false)
+    setIsWalletConnected(false)
   }
 
-  // Verificar conexão existente ao carregar a página
-  useEffect(() => {
-    const checkConnection = async () => {
-      if (!isFreighterAvailable()) return
-
-      try {
-        const freighterApi = new FreighterApi()
-        const isConnected = await freighterApi.isConnected()
-        if (isConnected) {
-          const publicKey = await freighterApi.getPublicKey()
-          setPublicKey(publicKey)
-          setIsConnected(true)
-        }
-      } catch (error) {
-        console.error('Erro ao verificar conexão:', error)
-      }
-    }
-
-    checkConnection()
-  }, [])
-
   const value: WalletContextType = {
-    isConnected,
+    isConnected: isWalletConnected,
     publicKey,
     connect,
     disconnect,
-    isLoading
+    isLoading,
+    kit
   }
 
   return (

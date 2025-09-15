@@ -1,14 +1,5 @@
-declare global {
-  interface Window {
-    freighterApi: {
-      isConnected: () => Promise<boolean>
-      getPublicKey: () => Promise<string>
-      connect: () => Promise<string>
-      disconnect: () => Promise<void>
-    }
-  }
-}
-
-export {}
+// Stellar Wallets Kit types are already included in the package
+// No need for custom type declarations as the library provides its own types
+export {};
 
 

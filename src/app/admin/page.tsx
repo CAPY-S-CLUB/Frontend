@@ -7,7 +7,7 @@ import { issueMembership, issueBadge, awardBadge, TransactionStatus } from '@/li
 import TransactionStatusComponent from '@/components/TransactionStatus'
 
 export default function Admin() {
-  const { isConnected, publicKey } = useWallet()
+  const { isConnected, publicKey, kit } = useWallet()
   
   const [membershipForm, setMembershipForm] = useState({
     walletAddress: ''
@@ -28,7 +28,7 @@ export default function Admin() {
   const handleMembershipSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
-    if (!isConnected || !publicKey) {
+    if (!isConnected || !publicKey || !kit) {
       alert('Por favor, conecte sua carteira primeiro')
       return
     }
@@ -45,7 +45,7 @@ export default function Admin() {
     })
 
     try {
-      const result = await issueMembership(membershipForm.walletAddress, publicKey)
+      const result = await issueMembership(membershipForm.walletAddress, publicKey, kit)
       setMembershipStatus(result)
       
       if (result.status === 'success') {
@@ -65,7 +65,7 @@ export default function Admin() {
   const handleBadgeSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
-    if (!isConnected || !publicKey) {
+    if (!isConnected || !publicKey || !kit) {
       alert('Por favor, conecte sua carteira primeiro')
       return
     }
@@ -84,7 +84,7 @@ export default function Admin() {
     try {
       // Se o fluxo for apenas "award" (conceder um badge já existente no contrato)
       // use a função awardBadge. Se quiser continuar com emissão + award, mantenha issueBadge.
-      const result = await awardBadge(badgeForm.walletAddress, badgeForm.badgeId, publicKey)
+      const result = await awardBadge(badgeForm.walletAddress, badgeForm.badgeId, publicKey, kit)
       setBadgeStatus(result)
       
       if (result.status === 'success') {

@@ -1,4 +1,4 @@
-import { Server, Asset, Keypair } from 'stellar-sdk'
+import StellarSdk, { Asset, Keypair } from 'stellar-sdk'
 import { getStellarConfig } from './stellar-config'
 
 // Obter configurações do Stellar
@@ -37,7 +37,7 @@ export async function checkMembership(userAddress: string): Promise<boolean> {
     }
 
     // Configurar servidor Stellar
-    const server = new Server(config.horizonUrl)
+    const server = new StellarSdk.Server(config.horizonUrl)
     
     // Criar objeto do ativo de membership
     const membershipAsset = new Asset(config.membershipAsset.code, config.membershipAsset.issuer)
@@ -46,7 +46,7 @@ export async function checkMembership(userAddress: string): Promise<boolean> {
     const account = await server.loadAccount(userAddress)
     
     // Verificar se a conta possui o ativo de membership
-    const balance = account.balances.find(balance => {
+    const balance = account.balances.find((balance: any) => {
       if (balance.asset_type === 'native') return false
       
       const asset = new Asset(balance.asset_code!, balance.asset_issuer!)
@@ -85,7 +85,7 @@ export async function checkBadge(userAddress: string, badgeId: string): Promise<
     }
 
     // Configurar servidor Stellar
-    const server = new Server(config.horizonUrl)
+    const server = new StellarSdk.Server(config.horizonUrl)
     
     // Criar objeto do ativo do badge
     const badgeAsset = new Asset(badgeId, config.membershipAsset.issuer)
@@ -94,7 +94,7 @@ export async function checkBadge(userAddress: string, badgeId: string): Promise<
     const account = await server.loadAccount(userAddress)
     
     // Verificar se a conta possui o ativo do badge
-    const balance = account.balances.find(balance => {
+    const balance = account.balances.find((balance: any) => {
       if (balance.asset_type === 'native') return false
       
       const asset = new Asset(balance.asset_code!, balance.asset_issuer!)
@@ -123,7 +123,7 @@ export async function checkBadge(userAddress: string, badgeId: string): Promise<
  */
 export async function getAccountInfo(userAddress: string) {
   try {
-    const server = new Server(config.horizonUrl)
+    const server = new StellarSdk.Server(config.horizonUrl)
     const account = await server.loadAccount(userAddress)
     
     return {
