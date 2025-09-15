@@ -12,6 +12,7 @@ interface WalletContextType {
   isConnected: boolean
   publicKey: string | null
   connect: () => Promise<void>
+  connectWithWallet: (walletId: string) => Promise<void>
   disconnect: () => void
   isLoading: boolean
   kit: StellarWalletsKit | null
@@ -47,13 +48,14 @@ export function WalletProvider({ children }: WalletProviderProps) {
     initKit()
   }, [])
 
-  // Conectar à carteira
-  const connect = async () => {
+  // Conectar com carteira específica
+  const connectWithWallet = async (walletId: string) => {
     setIsLoading(true)
     try {
-      // Verificar se há uma carteira real disponível
       if (kit) {
         try {
+          // Configurar a carteira selecionada
+          kit.setWallet(walletId)
           const { address } = await kit.getAddress()
           if (address) {
             setPublicKey(address)
@@ -62,7 +64,7 @@ export function WalletProvider({ children }: WalletProviderProps) {
             return
           }
         } catch (error) {
-          console.log('Carteira real não disponível, usando modo demo:', error)
+          console.log(`Carteira ${walletId} não disponível, usando modo demo:`, error)
         }
       }
       
@@ -72,13 +74,18 @@ export function WalletProvider({ children }: WalletProviderProps) {
         setPublicKey(demoAddress)
         setIsWalletConnected(true)
         setIsLoading(false)
-        alert('Conectado com carteira demo! Endereço: ' + demoAddress.slice(0, 8) + '...' + demoAddress.slice(-8))
+        alert(`Conectado com carteira demo (${walletId})! Endereço: ` + demoAddress.slice(0, 8) + '...' + demoAddress.slice(-8))
       }, 1500)
     } catch (error) {
       console.error('Erro ao conectar à carteira:', error)
       setIsLoading(false)
-      alert('Erro ao conectar à carteira. Tente novamente.')
+      throw error
     }
+  }
+
+  // Conectar à carteira (método legado - usa Freighter por padrão)
+  const connect = async () => {
+    await connectWithWallet(FREIGHTER_ID)
   }
 
   // Desconectar da carteira
@@ -91,6 +98,7 @@ export function WalletProvider({ children }: WalletProviderProps) {
     isConnected: isWalletConnected,
     publicKey,
     connect,
+    connectWithWallet,
     disconnect,
     isLoading,
     kit

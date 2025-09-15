@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google'
 import './globals.css'
 import Header from '@/components/Header'
 import { WalletProvider } from '@/lib/WalletProvider'
+import { HeaderProvider } from '@/lib/HeaderProvider'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -20,10 +21,12 @@ export default function RootLayout({
     <html lang="pt-BR">
       <body className={`${inter.className} bg-slate-900`}>
         <WalletProvider>
-          <Header />
-          <main className="pt-20">
-            {children}
-          </main>
+          <HeaderProvider>
+            <Header />
+            <main className="pt-20">
+              {children}
+            </main>
+          </HeaderProvider>
         </WalletProvider>
       </body>
     </html>

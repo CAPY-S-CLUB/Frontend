@@ -12,6 +12,7 @@
     "@creit.tech/stellar-wallets-kit": "^1.9.5",
     "@stellar/stellar-sdk": "^11.2.0",
     "clsx": "^2.1.1",
+    "lucide-react": "^0.544.0",
     "next": "14.0.4",
     "react": "^18",
     "react-dom": "^18",

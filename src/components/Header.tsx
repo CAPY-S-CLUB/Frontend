@@ -3,9 +3,72 @@
 import { Button } from './ui/button'
 import { useWallet } from '@/lib/WalletProvider'
 import ConnectButton from '@/components/ConnectButton'
+import { useRouter } from 'next/navigation'
+import { useState, useEffect } from 'react'
+import { useHeader } from '@/lib/HeaderProvider'
+import WalletModal from './WalletModal'
 
 export default function Header() {
-  const { isConnected, publicKey, connect, disconnect, isLoading } = useWallet()
+  const { isConnected, publicKey, connectWithWallet, disconnect, isLoading } = useWallet()
+  const router = useRouter()
+  const { isHeaderVisible } = useHeader()
+  const [isScrolled, setIsScrolled] = useState(false)
+  const [isVisible, setIsVisible] = useState(true)
+  const [lastScrollY, setLastScrollY] = useState(0)
+  const [showWalletModal, setShowWalletModal] = useState(false)
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY
+      
+      // Detectar se rolou para baixo ou para cima
+      if (currentScrollY > lastScrollY && currentScrollY > 100) {
+        // Rolando para baixo - esconder header
+        setIsVisible(false)
+      } else {
+        // Rolando para cima - mostrar header
+        setIsVisible(true)
+      }
+      
+      // Adicionar background quando rolar
+      setIsScrolled(currentScrollY > 50)
+      setLastScrollY(currentScrollY)
+    }
+
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [lastScrollY])
+
+  const handleConnectClick = () => {
+    setShowWalletModal(true)
+  }
+
+  const handleWalletSelect = async (walletId: string) => {
+    try {
+      await connectWithWallet(walletId)
+      setShowWalletModal(false)
+    } catch (error) {
+      console.error('Erro ao conectar carteira:', error)
+      // Manter modal aberta em caso de erro para o usuário tentar novamente
+    }
+  }
+
+  const generateDemoAccount = () => {
+    // Gerar dados fictícios de conta demo
+    const demoData = {
+      accountId: 'DEMO_' + Math.random().toString(36).substr(2, 9).toUpperCase(),
+      balance: Math.floor(Math.random() * 10000) + 1000,
+      assets: ['XLM', 'USDC', 'BTC'],
+      transactions: [],
+      createdAt: new Date().toISOString()
+    }
+    
+    // Salvar dados demo no localStorage
+    localStorage.setItem('demoAccount', JSON.stringify(demoData))
+    
+    // Redirecionar para dashboard com parâmetro demo
+    router.push('/dashboard?demo=true')
+  }
 
   const formatAddress = (address: string) => {
     if (address.length <= 12) return address
@@ -13,7 +76,11 @@ export default function Header() {
   }
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-transparent text-white px-6 py-4 border-b border-white/10">
+    <header className={`fixed top-0 left-0 right-0 z-50 text-white px-6 transition-all duration-300 ease-in-out ${
+      (isVisible && isHeaderVisible) ? 'translate-y-0' : '-translate-y-full'
+    } ${
+       isScrolled ? 'bg-slate-900/95 backdrop-blur-md border-b border-white/20 py-2' : 'bg-transparent border-b border-white/10 py-3'
+     }`}>
       <div className="flex items-center justify-between max-w-7xl mx-auto">
         {/* Logo */}
         <div className="flex items-center">
@@ -22,20 +89,51 @@ export default function Header() {
           </h1>
         </div>
 
-        {/* Wallet Connection */}
+        {/* Wallet Connection and Demo Account */}
         <div className="flex items-center space-x-4">
           {isConnected && publicKey ? (
             <div className="flex items-center space-x-3">
               <div className="text-sm text-gray-300">
                 <span className="text-green-400">●</span> {formatAddress(publicKey)}
               </div>
-              <ConnectButton className="px-4 py-2" />
+              <Button
+                onClick={generateDemoAccount}
+                className="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-lg transition-colors duration-200"
+              >
+                Generate Demo Account
+              </Button>
+              <Button
+                onClick={disconnect}
+                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors duration-200"
+              >
+                Disconnect
+              </Button>
             </div>
           ) : (
-            <ConnectButton />
+            <div className="flex items-center space-x-3">
+              <Button
+                onClick={generateDemoAccount}
+                className="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-lg transition-colors duration-200"
+              >
+                Generate Demo Account
+              </Button>
+              <Button
+                onClick={handleConnectClick}
+                disabled={isLoading}
+                className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white px-4 py-2 rounded-lg transition-colors duration-200"
+              >
+                {isLoading ? 'Connecting...' : 'Connect Wallet'}
+              </Button>
+            </div>
           )}
         </div>
       </div>
+      
+      <WalletModal
+        isOpen={showWalletModal}
+        onClose={() => setShowWalletModal(false)}
+        onSelectWallet={handleWalletSelect}
+      />
     </header>
   )
 }
