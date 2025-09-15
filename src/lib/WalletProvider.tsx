@@ -64,18 +64,14 @@ export function WalletProvider({ children }: WalletProviderProps) {
             return
           }
         } catch (error) {
-          console.log(`Carteira ${walletId} não disponível, usando modo demo:`, error)
+          console.log(`Carteira ${walletId} não disponível:`, error)
+          setIsLoading(false)
+          throw new Error(`Falha ao conectar com a carteira ${walletId}`)
         }
-      }
-      
-      // Fallback para modo demo
-      setTimeout(() => {
-        const demoAddress = 'GDEMO1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890'
-        setPublicKey(demoAddress)
-        setIsWalletConnected(true)
+      } else {
         setIsLoading(false)
-        alert(`Conectado com carteira demo (${walletId})! Endereço: ` + demoAddress.slice(0, 8) + '...' + demoAddress.slice(-8))
-      }, 1500)
+        throw new Error('Kit de carteiras não inicializado')
+      }
     } catch (error) {
       console.error('Erro ao conectar à carteira:', error)
       setIsLoading(false)

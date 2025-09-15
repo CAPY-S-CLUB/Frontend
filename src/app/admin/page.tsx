@@ -1,9 +1,10 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { useWallet } from '@/lib/WalletProvider'
+import { useHeader } from '@/lib/HeaderProvider'
 import ConnectButton from '@/components/ConnectButton'
 
 interface User {
@@ -28,12 +29,33 @@ export default function AdminPanel() {
   const isDemoMode = searchParams.get('demo') === 'true'
   const [activeTab, setActiveTab] = useState('users')
   const { isConnected, publicKey } = useWallet()
+  const { hideHeader, showHeader } = useHeader()
+
+  useEffect(() => {
+    // Ocultar o header global quando entrar na página de admin
+    hideHeader()
+    
+    // Mostrar o header novamente quando sair da página
+    return () => {
+      showHeader()
+    }
+  }, [hideHeader, showHeader])
 
   const formatAddress = (address: string) => {
     if (address.length <= 12) return address
     return `${address.slice(0, 6)}...${address.slice(-6)}`
   }
   
+  // Função para formatar data
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString)
+    return date.toLocaleDateString('pt-BR', { 
+      day: '2-digit', 
+      month: '2-digit', 
+      year: 'numeric' 
+    })
+  }
+
   // Mock data para usuários
   const [users] = useState<User[]>([
     { id: '1', name: 'João Silva', email: 'joao@email.com', membershipStatus: 'active', joinDate: '2024-01-15' },
@@ -60,7 +82,7 @@ export default function AdminPanel() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-900 text-white">
+    <div className="min-h-screen bg-slate-900 text-white -mt-20">
       {/* Admin Header */}
       <header className="bg-gray-800 border-b border-gray-700 px-6 py-4">
         <div className="flex items-center justify-between max-w-7xl mx-auto">
@@ -137,12 +159,6 @@ export default function AdminPanel() {
           >
             Clubes
           </button>
-          <button 
-            className={`px-6 py-3 font-medium ${activeTab === 'analytics' ? 'text-blue-400 border-b-2 border-blue-400' : 'text-gray-400 hover:text-gray-300'}`}
-            onClick={() => setActiveTab('analytics')}
-          >
-            Analytics
-          </button>
         </div>
 
         {/* Users Tab */}
@@ -156,35 +172,37 @@ export default function AdminPanel() {
             </div>
             
             <div className="bg-gray-800 rounded-lg overflow-hidden">
-              <table className="w-full">
+              <div className="overflow-x-auto">
+                <table className="w-full min-w-[800px]">
                 <thead className="bg-gray-700">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Nome</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Email</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Status</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Data de Entrada</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Ações</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider w-1/5">Nome</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider w-1/4">Email</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider w-1/6">Status</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider w-1/6">Data de Entrada</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider w-1/6">Ações</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-700">
                   {users.map((user) => (
                     <tr key={user.id} className="hover:bg-gray-700/50">
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-white">{user.name}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{user.email}</td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="px-4 py-4 whitespace-nowrap text-sm font-medium text-white">{user.name}</td>
+                      <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-300">{user.email}</td>
+                      <td className="px-4 py-4 whitespace-nowrap">
                         <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(user.membershipStatus)}`}>
                           {user.membershipStatus}
                         </span>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{user.joinDate}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <button className="text-blue-400 hover:text-blue-300 mr-3">Editar</button>
+                      <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-300">{formatDate(user.joinDate)}</td>
+                      <td className="px-4 py-4 whitespace-nowrap text-sm font-medium">
+                        <button className="text-blue-400 hover:text-blue-300 mr-2">Editar</button>
                         <button className="text-red-400 hover:text-red-300">Remover</button>
                       </td>
                     </tr>
                   ))}
                 </tbody>
-              </table>
+                </table>
+              </div>
             </div>
           </div>
         )}
@@ -196,6 +214,21 @@ export default function AdminPanel() {
               <h2 className="text-2xl font-bold text-white">Gerenciar Clubes</h2>
               <div className="text-sm text-gray-400">
                 Total: {clubs.length} clubes
+              </div>
+            </div>
+            
+            {/* Analytics Summary */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+              <div className="bg-gray-800 p-6 rounded-lg">
+                <h3 className="text-lg font-semibold text-white mb-2">Total de Membros</h3>
+                <p className="text-3xl font-bold text-blue-400">{clubs.reduce((acc, club) => acc + club.members, 0)}</p>
+                <p className="text-sm text-gray-400 mt-1">Em todos os grupos</p>
+              </div>
+              
+              <div className="bg-gray-800 p-6 rounded-lg">
+                <h3 className="text-lg font-semibold text-white mb-2">Quantidade de Grupos</h3>
+                <p className="text-3xl font-bold text-green-400">{clubs.length}</p>
+                <p className="text-sm text-gray-400 mt-1">Grupos criados</p>
               </div>
             </div>
             
@@ -233,56 +266,7 @@ export default function AdminPanel() {
           </div>
         )}
 
-        {/* Analytics Tab */}
-        {activeTab === 'analytics' && (
-          <div className="space-y-6">
-            <h2 className="text-2xl font-bold text-white">Analytics do Sistema</h2>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <div className="bg-gray-800 p-6 rounded-lg">
-                <h3 className="text-lg font-semibold text-white mb-2">Total de Usuários</h3>
-                <p className="text-3xl font-bold text-blue-400">{users.length}</p>
-                <p className="text-sm text-gray-400 mt-1">+12% este mês</p>
-              </div>
-              
-              <div className="bg-gray-800 p-6 rounded-lg">
-                <h3 className="text-lg font-semibold text-white mb-2">Clubes Ativos</h3>
-                <p className="text-3xl font-bold text-green-400">{clubs.filter(c => c.status === 'active').length}</p>
-                <p className="text-sm text-gray-400 mt-1">+5% este mês</p>
-              </div>
-              
-              <div className="bg-gray-800 p-6 rounded-lg">
-                <h3 className="text-lg font-semibold text-white mb-2">Membros Ativos</h3>
-                <p className="text-3xl font-bold text-purple-400">{users.filter(u => u.membershipStatus === 'active').length}</p>
-                <p className="text-sm text-gray-400 mt-1">+8% este mês</p>
-              </div>
-              
-              <div className="bg-gray-800 p-6 rounded-lg">
-                <h3 className="text-lg font-semibold text-white mb-2">Total de Membros em Clubes</h3>
-                <p className="text-3xl font-bold text-yellow-400">{clubs.reduce((acc, club) => acc + club.members, 0)}</p>
-                <p className="text-sm text-gray-400 mt-1">+15% este mês</p>
-              </div>
-            </div>
-            
-            <div className="bg-gray-800 p-6 rounded-lg">
-              <h3 className="text-xl font-semibold text-white mb-4">Atividade Recente</h3>
-              <div className="space-y-3">
-                <div className="flex items-center justify-between py-2 border-b border-gray-700">
-                  <span className="text-gray-300">Novo usuário registrado: Pedro Costa</span>
-                  <span className="text-sm text-gray-500">2 horas atrás</span>
-                </div>
-                <div className="flex items-center justify-between py-2 border-b border-gray-700">
-                  <span className="text-gray-300">Clube criado: Ocean Explorers</span>
-                  <span className="text-sm text-gray-500">1 dia atrás</span>
-                </div>
-                <div className="flex items-center justify-between py-2 border-b border-gray-700">
-                  <span className="text-gray-300">Usuário ativado: Maria Santos</span>
-                  <span className="text-sm text-gray-500">3 dias atrás</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
+
         </div>
       </div>
     </div>
