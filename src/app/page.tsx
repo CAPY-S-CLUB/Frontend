@@ -16,7 +16,7 @@ export default function Home() {
       <div className="relative z-20 flex flex-col items-center justify-center h-full w-full text-center p-4 sm:p-8">
         <h1 className="text-6xl font-bold tracking-tight">Exclusivity, Verified.</h1>
         <p className="mt-4 text-xl text-gray-300 mb-8">
-          The digital home for the world's most discerning yacht owners. Connect your wallet to access the private community.
+          The digital home for the worlds most discerning yacht owners. Connect your wallet to access the private community.
         </p>
         <div>
           {/* Reusable connect button */}
