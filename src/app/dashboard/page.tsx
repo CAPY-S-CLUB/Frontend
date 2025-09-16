@@ -183,25 +183,25 @@ function DashboardContent() {
         {/* Navigation Tabs */}
         <div className="flex gap-4 mb-6">
           <button 
-            className={`px-6 py-3 font-medium rounded-full transition-all duration-300 ${activeTab === 'membership' ? 'bg-blue-600 hover:bg-blue-700 text-white bg-gradient-to-r from-blue-600 to-blue-700 border border-blue-500' : 'bg-slate-800/50 text-gray-300 hover:bg-blue-600/20 hover:text-blue-400 border border-blue-500/20'}`}
+            className={`px-6 py-3 font-medium rounded-full transition-all duration-300 ${activeTab === 'membership' ? 'bg-yellow-500 hover:bg-yellow-600 text-gray-900 bg-gradient-to-r from-yellow-400 to-yellow-500 border border-yellow-400 font-bold' : 'bg-slate-800/50 text-gray-300 hover:bg-yellow-600/20 hover:text-yellow-400 border border-yellow-500/20'}`}
             onClick={() => setActiveTab('membership')}
           >
             Membership
           </button>
           <button 
-            className={`px-6 py-3 font-medium rounded-full transition-all duration-300 ${activeTab === 'clubs' ? 'bg-blue-600 hover:bg-blue-700 text-white bg-gradient-to-r from-blue-600 to-blue-700 border border-blue-500' : 'bg-slate-800/50 text-gray-300 hover:bg-blue-600/20 hover:text-blue-400 border border-blue-500/20'}`}
+            className={`px-6 py-3 font-medium rounded-full transition-all duration-300 ${activeTab === 'clubs' ? 'bg-yellow-500 hover:bg-yellow-600 text-gray-900 bg-gradient-to-r from-yellow-400 to-yellow-500 border border-yellow-400 font-bold' : 'bg-slate-800/50 text-gray-300 hover:bg-yellow-600/20 hover:text-yellow-400 border border-yellow-500/20'}`}
             onClick={() => setActiveTab('clubs')}
           >
             My Clubs
           </button>
           <button 
-            className={`px-6 py-3 font-medium rounded-full transition-all duration-300 ${activeTab === 'discover' ? 'bg-blue-600 hover:bg-blue-700 text-white bg-gradient-to-r from-blue-600 to-blue-700 border border-blue-500' : 'bg-slate-800/50 text-gray-300 hover:bg-blue-600/20 hover:text-blue-400 border border-blue-500/20'}`}
+            className={`px-6 py-3 font-medium rounded-full transition-all duration-300 ${activeTab === 'discover' ? 'bg-yellow-500 hover:bg-yellow-600 text-gray-900 bg-gradient-to-r from-yellow-400 to-yellow-500 border border-yellow-400 font-bold' : 'bg-slate-800/50 text-gray-300 hover:bg-yellow-600/20 hover:text-yellow-400 border border-yellow-500/20'}`}
             onClick={() => setActiveTab('discover')}
           >
             Discover
           </button>
           <button 
-            className={`px-6 py-3 font-medium rounded-full transition-all duration-300 ${activeTab === 'admin' ? 'bg-blue-600 hover:bg-blue-700 text-white bg-gradient-to-r from-blue-600 to-blue-700 border border-blue-500' : 'bg-slate-800/50 text-gray-300 hover:bg-blue-600/20 hover:text-blue-400 border border-blue-500/20'}`}
+            className={`px-6 py-3 font-medium rounded-full transition-all duration-300 ${activeTab === 'admin' ? 'bg-yellow-500 hover:bg-yellow-600 text-gray-900 bg-gradient-to-r from-yellow-400 to-yellow-500 border border-yellow-400 font-bold' : 'bg-slate-800/50 text-gray-300 hover:bg-yellow-600/20 hover:text-yellow-400 border border-yellow-500/20'}`}
             onClick={() => router.push(isDemoMode ? '/admin?demo=true' : '/admin')}
           >
             Admin

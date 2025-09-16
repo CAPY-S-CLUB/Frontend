@@ -28,6 +28,9 @@ module.exports = {
           800: '#1e293b',
           900: '#0f172a',
         },
+        'premium-dark': '#0f172a',
+        'premium-gold': '#d4af37',
+        'premium-gold-light': '#ffd700',
       },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',

@@ -33,8 +33,42 @@ export interface ApiResponse<T> {
 }
 
 class ClubService {
+  // Mock data para desenvolvimento local
+  private mockClubs: Club[] = [
+    {
+      id: '1',
+      name: 'Marina Bay Yacht Club',
+      members: 45,
+      status: 'active',
+      createdDate: '2024-01-15',
+      description: 'Exclusive yacht club for luxury boat owners',
+      category: 'yacht',
+      maxMembers: 100,
+      membershipFee: 5000,
+      location: 'Marina Bay, Singapore',
+      requirements: 'Own a yacht worth minimum $500k'
+    },
+    {
+      id: '2',
+      name: 'Atlantic Sailing Club',
+      members: 32,
+      status: 'active',
+      createdDate: '2024-02-20',
+      description: 'Community for sailing enthusiasts',
+      category: 'sailing',
+      maxMembers: 75,
+      membershipFee: 2500,
+      location: 'Newport, Rhode Island',
+      requirements: 'Basic sailing certification required'
+    }
+  ];
+
   private async fetchApi<T>(endpoint: string, options: RequestInit = {}): Promise<ApiResponse<T>> {
+    // Simular delay de rede
+    await new Promise(resolve => setTimeout(resolve, 500));
+    
     try {
+      // Tentar fazer requisição real primeiro
       const response = await fetch(`${API_BASE_URL}${endpoint}`, {
         headers: {
           'Content-Type': 'application/json',
@@ -50,9 +84,58 @@ class ClubService {
       const data = await response.json();
       return data;
     } catch (error) {
-      console.error('API Error:', error);
-      throw error;
+      console.warn('API não disponível, usando dados mock:', error);
+      // Fallback para dados mock
+      return this.handleMockRequest<T>(endpoint, options);
     }
+  }
+
+  private handleMockRequest<T>(endpoint: string, options: RequestInit = {}): ApiResponse<T> {
+    const method = options.method || 'GET';
+    
+    if (endpoint === '/clubs' && method === 'GET') {
+      return {
+        success: true,
+        data: this.mockClubs as T,
+        total: this.mockClubs.length
+      };
+    }
+    
+    if (endpoint === '/clubs' && method === 'POST') {
+      const body = JSON.parse(options.body as string) as CreateClubData;
+      const newClub: Club = {
+        id: Date.now().toString(),
+        name: body.name,
+        members: 0,
+        status: 'active',
+        createdDate: new Date().toISOString().split('T')[0],
+        description: body.description,
+        category: body.category,
+        maxMembers: body.maxMembers,
+        membershipFee: body.membershipFee,
+        location: body.location,
+        requirements: body.requirements
+      };
+      
+      this.mockClubs.push(newClub);
+      return {
+        success: true,
+        data: newClub as T,
+        message: 'Club criado com sucesso!'
+      };
+    }
+    
+    if (endpoint.startsWith('/clubs/') && method === 'DELETE') {
+      const id = endpoint.split('/')[2];
+      this.mockClubs = this.mockClubs.filter(club => club.id !== id);
+      return {
+        success: true,
+        data: null as T,
+        message: 'Club removido com sucesso!'
+      };
+    }
+    
+    throw new Error(`Mock endpoint não implementado: ${method} ${endpoint}`);
   }
 
   // Buscar todos os clubs

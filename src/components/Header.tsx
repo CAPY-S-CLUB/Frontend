@@ -130,7 +130,7 @@ export default function Header() {
               {/* Dashboard Button */}
               <Button
                 onClick={() => router.push('/dashboard')}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-full transition-colors duration-200 bg-gradient-to-r from-blue-600 to-blue-700 border border-blue-500"
+                className="bg-yellow-500 hover:bg-yellow-600 text-gray-900 px-6 py-3 rounded-full transition-colors duration-200 bg-gradient-to-r from-yellow-400 to-yellow-500 border border-yellow-400 font-bold"
               >
                 Dashboard
               </Button>
@@ -138,7 +138,7 @@ export default function Header() {
               {/* Logout Button */}
               <Button
                 onClick={handleLogout}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-full transition-colors duration-200 bg-gradient-to-r from-blue-600 to-blue-700 border border-blue-500"
+                className="bg-yellow-500 hover:bg-yellow-600 text-gray-900 px-6 py-3 rounded-full transition-colors duration-200 bg-gradient-to-r from-yellow-400 to-yellow-500 border border-yellow-400 font-bold"
               >
                 Logout
               </Button>
@@ -147,14 +147,14 @@ export default function Header() {
             <div className="flex items-center justify-center space-x-4">
               <Button
                 onClick={handleDemoAccount}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-full transition-colors duration-200 bg-gradient-to-r from-blue-600 to-blue-700 border border-blue-500"
+                className="bg-yellow-500 hover:bg-yellow-600 text-gray-900 px-6 py-3 rounded-full transition-colors duration-200 bg-gradient-to-r from-yellow-400 to-yellow-500 border border-yellow-400 font-bold"
               >
                 Demo Account
               </Button>
               <Button
                 onClick={handleConnectClick}
                 disabled={isLoading}
-                className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white px-6 py-3 rounded-full transition-colors duration-200 bg-gradient-to-r from-blue-600 to-blue-700 border border-blue-500"
+                className="bg-yellow-500 hover:bg-yellow-600 disabled:bg-gray-600 disabled:cursor-not-allowed text-gray-900 px-6 py-3 rounded-full transition-colors duration-200 bg-gradient-to-r from-yellow-400 to-yellow-500 border border-yellow-400 font-bold"
               >
                 {isLoading ? 'Connecting...' : 'Connect Wallet'}
               </Button>
