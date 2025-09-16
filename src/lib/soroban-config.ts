@@ -43,16 +43,63 @@ export const SOROBAN_CONFIG = {
   }
 }
 
-// Função para obter configurações baseadas no ambiente
+// Função para obter configurações do Soroban com validação
 export const getSorobanConfig = () => {
-  return {
+  const config = {
     rpcUrl: process.env.NEXT_PUBLIC_SOROBAN_RPC_URL || SOROBAN_CONFIG.RPC_URL,
-    horizonUrl: process.env.NEXT_PUBLIC_HORIZON_URL || SOROBAN_CONFIG.HORIZON_URL,
-    networkPassphrase: process.env.NEXT_PUBLIC_NETWORK_PASSPHRASE || SOROBAN_CONFIG.NETWORK_PASSPHRASE,
+    horizonUrl: process.env.NEXT_PUBLIC_STELLAR_HORIZON_URL || SOROBAN_CONFIG.HORIZON_URL,
+    networkPassphrase: process.env.NEXT_PUBLIC_SOROBAN_NETWORK_PASSPHRASE || SOROBAN_CONFIG.NETWORK_PASSPHRASE,
     baseFee: process.env.NEXT_PUBLIC_BASE_FEE || SOROBAN_CONFIG.BASE_FEE,
-    membershipContractId: process.env.NEXT_PUBLIC_MEMBERSHIP_CONTRACT || SOROBAN_CONFIG.CONTRACTS.MEMBERSHIP,
-    badgesContractId: process.env.NEXT_PUBLIC_BADGES_CONTRACT || 'CBADGES_CONTRACT_ID_PLACEHOLDER',
-    adminSecretKey: process.env.ADMIN_SECRET_KEY || 'SADMIN_SECRET_KEY_PLACEHOLDER'
+    transactionTimeout: parseInt(process.env.NEXT_PUBLIC_TRANSACTION_TIMEOUT || SOROBAN_CONFIG.TRANSACTION_TIMEOUT.toString()),
+    contracts: {
+      membership: process.env.NEXT_PUBLIC_SOROBAN_CONTRACT_ID || SOROBAN_CONFIG.CONTRACTS.MEMBERSHIP,
+      badges: process.env.NEXT_PUBLIC_BADGES_CONTRACT || ''
+    },
+    metadata: SOROBAN_CONFIG.METADATA,
+    cache: {
+      enabled: process.env.NEXT_PUBLIC_ENABLE_CACHE === 'true',
+      duration: parseInt(process.env.NEXT_PUBLIC_CACHE_DURATION || '300000')
+    },
+    debug: process.env.NEXT_PUBLIC_DEBUG_MODE === 'true'
+  }
+  
+  // Validação básica
+  if (!config.rpcUrl || !config.networkPassphrase) {
+    throw new Error('Configurações do Soroban incompletas')
+  }
+  
+  return config
+}
+
+// Função para validar se o RPC do Soroban está disponível
+export const validateSorobanRPC = async () => {
+  try {
+    const config = getSorobanConfig()
+    const response = await fetch(config.rpcUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'getHealth'
+      })
+    })
+    return response.ok
+  } catch (error) {
+    console.error('Erro ao validar RPC do Soroban:', error)
+    return false
+  }
+}
+
+// Função para obter informações do contrato
+export const getContractInfo = (contractType: 'membership' | 'badges') => {
+  const config = getSorobanConfig()
+  return {
+    contractId: config.contracts[contractType],
+    rpcUrl: config.rpcUrl,
+    networkPassphrase: config.networkPassphrase
   }
 }
 

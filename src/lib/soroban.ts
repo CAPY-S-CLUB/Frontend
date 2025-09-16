@@ -1,6 +1,16 @@
 import * as StellarSdk from 'stellar-sdk'
 import { getSorobanConfig } from './soroban-config'
 import { StellarWalletsKit } from '@creit.tech/stellar-wallets-kit'
+import { 
+  createBlockchainError, 
+  logError, 
+  withErrorHandling, 
+  validateStellarAddress, 
+  validateContractId,
+  sanitizeInput,
+  BlockchainError,
+  BlockchainErrorType
+} from './error-handler'
 
 // Obter configurações do Soroban
 const config = getSorobanConfig()
@@ -34,38 +44,62 @@ export async function issueMembershipTransaction(
   rarity: string,
   category: string
 ): Promise<string> {
+  // Validação de inputs
+  if (!validateStellarAddress(userAddress)) {
+    throw createBlockchainError(
+      new Error('Endereço de usuário inválido'),
+      'Validação de endereço'
+    )
+  }
+  
+  const sanitizedTier = sanitizeInput(tier)
+  const sanitizedRarity = sanitizeInput(rarity)
+  const sanitizedCategory = sanitizeInput(category)
+  
+  if (!sanitizedTier || !sanitizedRarity || !sanitizedCategory) {
+    throw createBlockchainError(
+      new Error('Parâmetros de membership inválidos'),
+      'Validação de parâmetros'
+    )
+  }
+
   try {
     const config = getSorobanConfig()
+    
+    if (!validateContractId(config.contracts.membership)) {
+      throw createBlockchainError(
+        new Error('ID do contrato de membership inválido'),
+        'Validação de contrato'
+      )
+    }
+    
     const server = new StellarSdk.SorobanRpc.Server(config.rpcUrl)
+    const contract = new StellarSdk.Contract(config.contracts.membership)
 
-    // Get admin account
-    const adminKeypair = StellarSdk.Keypair.fromSecret(config.adminSecretKey)
-    const adminAccount = await server.getAccount(adminKeypair.publicKey())
-
-    // Create contract instance
-    const contract = new StellarSdk.Contract(config.membershipContractId)
-
-    // Build transaction
-    const transaction = new StellarSdk.TransactionBuilder(adminAccount, {
-      fee: StellarSdk.BASE_FEE,
+    // Simular transação (sem chave secreta do admin)
+    const sourceAccount = new StellarSdk.Account('GAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWHF', '0')
+    
+    const transaction = new StellarSdk.TransactionBuilder(sourceAccount, {
+      fee: config.baseFee,
       networkPassphrase: config.networkPassphrase,
     })
       .addOperation(
         contract.call(
           'issue_membership',
           StellarSdk.nativeToScVal(userAddress, { type: 'address' }),
-          StellarSdk.nativeToScVal(tier, { type: 'string' }),
-          StellarSdk.nativeToScVal(rarity, { type: 'string' }),
-          StellarSdk.nativeToScVal(category, { type: 'string' })
+          StellarSdk.nativeToScVal(sanitizedTier, { type: 'string' }),
+          StellarSdk.nativeToScVal(sanitizedRarity, { type: 'string' }),
+          StellarSdk.nativeToScVal(sanitizedCategory, { type: 'string' })
         )
       )
-      .setTimeout(30)
+      .setTimeout(config.transactionTimeout)
       .build()
 
     return transaction.toXDR()
   } catch (error) {
-    console.error('Erro ao criar transação de membership:', error)
-    throw new Error('Falha ao criar transação de membership')
+    const blockchainError = createBlockchainError(error, 'Criação de transação de membership')
+    logError(blockchainError)
+    throw blockchainError
   }
 }
 
@@ -175,7 +209,36 @@ export async function signAndSubmitTransaction(
   userAddress: string,
   kit: StellarWalletsKit
 ): Promise<TransactionStatus> {
-  try {
+  // Validação de inputs
+  if (!validateStellarAddress(userAddress)) {
+    const error = createBlockchainError(
+      new Error('Endereço de usuário inválido'),
+      'Validação de endereço'
+    )
+    logError(error)
+    return {
+      status: 'error',
+      message: error.userFriendlyMessage,
+      error: error.message
+    }
+  }
+  
+  if (!transactionXdr || typeof transactionXdr !== 'string') {
+    const error = createBlockchainError(
+      new Error('XDR da transação inválido'),
+      'Validação de XDR'
+    )
+    logError(error)
+    return {
+      status: 'error',
+      message: error.userFriendlyMessage,
+      error: error.message
+    }
+  }
+
+  const result = await withErrorHandling(async () => {
+    const config = getSorobanConfig()
+    
     // Assinar com Stellar Wallets Kit
     const { signedTxXdr } = await kit.signTransaction(transactionXdr, {
       address: userAddress,
@@ -190,9 +253,9 @@ export async function signAndSubmitTransaction(
     const response = await server.sendTransaction(transaction)
     
     if (response.status === 'PENDING') {
-      // Aguardar confirmação
+      // Aguardar confirmação com timeout configurável
       let attempts = 0
-      const maxAttempts = 30
+      const maxAttempts = Math.floor(config.transactionTimeout / 2000) // 2 segundos por tentativa
       
       while (attempts < maxAttempts) {
         await new Promise(resolve => setTimeout(resolve, 2000))
@@ -201,39 +264,39 @@ export async function signAndSubmitTransaction(
         
         if (txResponse.status === 'SUCCESS') {
           return {
-            status: 'success',
+            status: 'success' as const,
             message: 'Transação confirmada com sucesso',
             transactionHash: response.hash
           }
         } else if (txResponse.status === 'FAILED') {
-          return {
-            status: 'error',
-            message: 'Transação falhou',
-            error: 'Transaction failed on network'
-          }
+          throw createBlockchainError(
+            new Error('Transação falhou na rede'),
+            'Falha de transação'
+          )
         }
         
         attempts++
       }
       
-      return {
-        status: 'error',
-        message: 'Timeout aguardando confirmação da transação',
-        error: 'Transaction confirmation timeout'
-      }
+      throw createBlockchainError(
+        new Error('Timeout aguardando confirmação da transação'),
+        'Timeout de confirmação'
+      )
     } else {
-      return {
-        status: 'error',
-        message: 'Falha ao enviar transação',
-        error: response.errorResult?.toString() || 'Unknown error'
-      }
+      throw createBlockchainError(
+        new Error(response.errorResult?.toString() || 'Falha ao enviar transação'),
+        'Envio de transação'
+      )
     }
-  } catch (error) {
-    console.error('Erro ao assinar/enviar transação:', error)
+  }, 'Assinatura e envio de transação', 2) // Máximo 2 tentativas
+  
+  if (result.success) {
+    return result.data
+  } else {
     return {
       status: 'error',
-      message: error instanceof Error ? error.message : 'Erro ao processar transação',
-      error: error instanceof Error ? error.message : 'Erro desconhecido'
+      message: result.error.userFriendlyMessage,
+      error: result.error.message
     }
   }
 }
