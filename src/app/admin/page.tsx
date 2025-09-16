@@ -182,7 +182,7 @@ export default function AdminPanel() {
             <img 
               src="/capys-logo.jpeg" 
               alt="Capys Club" 
-              className="h-12 w-auto filter brightness-0 invert"
+              className="h-16 filter brightness-0 invert"
             />
             <span className="premium-title text-2xl">- Admin</span>
             <span className="px-4 py-2 bg-premium-gold/20 text-premium-gold text-sm font-semibold rounded-full border border-premium-gold/30">
