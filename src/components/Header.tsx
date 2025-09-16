@@ -111,7 +111,7 @@ export default function Header() {
                   </div>
                   <Button
                      onClick={() => disconnect(true)}
-                     className="bg-red-500 hover:bg-red-600 text-white px-2 py-1 text-xs rounded transition-colors duration-200"
+                     className="bg-yellow-500 hover:bg-yellow-600 text-gray-900 px-2 py-1 text-xs rounded transition-colors duration-200"
                      title="Desconectar carteira"
                    >
                      ✕
