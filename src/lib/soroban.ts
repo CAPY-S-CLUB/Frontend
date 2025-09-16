@@ -36,7 +36,7 @@ export interface MembershipData {
  * @param tier - Tier do membership
  * @param rarity - Raridade do membership
  * @param category - Categoria do membership
- * @returns Promise<string> - XDR da transação construída
+ * @returns Promise<string> -XDR da transação construída
  */
 export async function issueMembershipTransaction(
   userAddress: string,
