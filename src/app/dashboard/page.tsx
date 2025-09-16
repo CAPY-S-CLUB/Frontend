@@ -189,12 +189,7 @@ export default function Dashboard() {
           >
             My Clubs
           </button>
-          <button 
-            className={`px-4 py-2 font-medium ${activeTab === 'discover' ? 'text-purple-400 border-b-2 border-purple-400' : 'text-gray-400 hover:text-gray-300'}`}
-            onClick={() => setActiveTab('discover')}
-          >
-            Discover
-          </button>
+
           <button 
             className={`px-4 py-2 font-medium ${activeTab === 'admin' ? 'text-purple-400 border-b-2 border-purple-400' : 'text-gray-400 hover:text-gray-300'}`}
             onClick={() => router.push(isDemoMode ? '/admin?demo=true' : '/admin')}
@@ -422,19 +417,7 @@ export default function Dashboard() {
           </section>
         )}
 
-        {/* Discover Tab Content */}
-        {activeTab === 'discover' && (
-          <section className="space-y-6">
-            <h2 className="text-2xl font-bold text-white">
-              Discover Clubs
-            </h2>
-            <div className="text-center py-12">
-              <div className="text-6xl mb-4">🔍</div>
-              <h3 className="text-xl font-semibold text-gray-400 mb-2">Explore New Communities</h3>
-              <p className="text-gray-500">Find clubs that match your interests and passions!</p>
-            </div>
-          </section>
-        )}
+
         
         {/* Club Details Modal */}
         {showClubDetails && (
