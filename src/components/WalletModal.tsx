@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react'
 import { Button } from './ui/button'
 import { X } from 'lucide-react'
 import { useHeader } from '@/lib/HeaderProvider'
+import { FREIGHTER_ID } from '@creit.tech/stellar-wallets-kit'
+import { ALBEDO_ID } from '@creit.tech/stellar-wallets-kit/modules/albedo.module'
 
 interface WalletOption {
   id: string
@@ -23,13 +25,13 @@ interface WalletModalProps {
 // Usando os IDs corretos do @creit.tech/stellar-wallets-kit
 const SUPPORTED_WALLETS: WalletOption[] = [
   {
-    id: 'freighter',
+    id: FREIGHTER_ID,
     name: 'Freighter',
     icon: '🚀',
     description: 'Browser extension wallet for Stellar'
   },
   {
-    id: 'albedo',
+    id: ALBEDO_ID,
     name: 'Albedo',
     icon: '🌟',
     description: 'Web-based Stellar wallet'

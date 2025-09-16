@@ -4,6 +4,7 @@ import './globals.css'
 import Header from '@/components/Header'
 import { WalletProvider } from '@/lib/WalletProvider'
 import { HeaderProvider } from '@/lib/HeaderProvider'
+import { AuthProvider } from '@/lib/AuthProvider'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -21,12 +22,14 @@ export default function RootLayout({
     <html lang="pt-BR">
       <body className={`${inter.className} bg-slate-900`}>
         <WalletProvider>
-          <HeaderProvider>
-            <Header />
-            <main className="pt-20">
-              {children}
-            </main>
-          </HeaderProvider>
+          <AuthProvider>
+            <HeaderProvider>
+              <Header />
+              <main className="pt-20">
+                {children}
+              </main>
+            </HeaderProvider>
+          </AuthProvider>
         </WalletProvider>
       </body>
     </html>

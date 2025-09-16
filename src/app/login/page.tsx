@@ -1,31 +1,47 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
+import { useAuth } from '@/lib/AuthProvider'
 
 export default function Login() {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
+  const { login, loginDemo, isAuthenticated } = useAuth()
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    
-    // Aqui você implementaria a lógica de autenticação real
-    // Por enquanto, apenas uma validação simples
-    if (username && password) {
-      // Redirecionar para o dashboard após login bem-sucedido
+  // Redirecionar se já estiver autenticado
+  useEffect(() => {
+    if (isAuthenticated) {
       router.push('/dashboard')
-    } else {
-      setError('Por favor, preencha todos os campos')
+    }
+  }, [isAuthenticated, router])
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setError('')
+    setIsLoading(true)
+    
+    try {
+      const success = await login(username, password)
+      if (success) {
+        router.push('/dashboard')
+      } else {
+        setError('Credenciais inválidas')
+      }
+    } catch (error) {
+      setError('Erro ao fazer login. Tente novamente.')
+    } finally {
+      setIsLoading(false)
     }
   }
 
   const handleDemoAccount = () => {
-    // Redirecionar para o dashboard com conta demo
-    router.push('/dashboard?demo=true')
+    loginDemo()
+    router.push('/dashboard')
   }
 
   return (
@@ -76,9 +92,10 @@ export default function Login() {
             
             <Button 
               type="submit"
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition-colors duration-200"
+              disabled={isLoading}
+              className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white font-semibold py-2 rounded-lg transition-colors duration-200"
             >
-              Entrar
+              {isLoading ? 'Entrando...' : 'Entrar'}
             </Button>
           </form>
           

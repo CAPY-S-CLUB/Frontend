@@ -2,6 +2,7 @@
 
 import { Button } from './ui/button'
 import { useWallet } from '@/lib/WalletProvider'
+import { useAuth } from '@/lib/AuthProvider'
 import ConnectButton from '@/components/ConnectButton'
 import { useRouter } from 'next/navigation'
 import { useState, useEffect } from 'react'
@@ -10,6 +11,7 @@ import WalletModal from './WalletModal'
 
 export default function Header() {
   const { isConnected, publicKey, connectWithWallet, disconnect, isLoading } = useWallet()
+  const { user, isAuthenticated, logout, loginDemo } = useAuth()
   const router = useRouter()
   const { isHeaderVisible } = useHeader()
   const [isScrolled, setIsScrolled] = useState(false)
@@ -53,21 +55,25 @@ export default function Header() {
     }
   }
 
-  const generateDemoAccount = () => {
-    // Gerar dados fictícios de conta demo
-    const demoData = {
-      accountId: 'DEMO_' + Math.random().toString(36).substr(2, 9).toUpperCase(),
-      balance: Math.floor(Math.random() * 10000) + 1000,
-      assets: ['XLM', 'USDC', 'BTC'],
-      transactions: [],
-      createdAt: new Date().toISOString()
+  const handleDemoAccount = () => {
+    if (isAuthenticated) {
+      router.push('/dashboard')
+    } else {
+      loginDemo()
+      router.push('/dashboard')
     }
-    
-    // Salvar dados demo no localStorage
-    localStorage.setItem('demoAccount', JSON.stringify(demoData))
-    
-    // Redirecionar para dashboard com parâmetro demo
-    router.push('/dashboard?demo=true')
+  }
+
+  const handleLogin = () => {
+    router.push('/login')
+  }
+
+  const handleLogout = () => {
+    console.log('🔴 Botão de logout clicado no Header')
+    console.trace('Stack trace do clique no logout:')
+    logout()
+    disconnect(true) // Forçar desconexão apenas quando usuário clica em logout
+    router.push('/')
   }
 
   const formatAddress = (address: string) => {
@@ -89,38 +95,74 @@ export default function Header() {
           </h1>
         </div>
 
-        {/* Wallet Connection and Demo Account */}
+        {/* User Authentication and Wallet */}
         <div className="flex items-center space-x-4">
-          {isConnected && publicKey ? (
+          {isAuthenticated ? (
             <div className="flex items-center space-x-3">
+              {/* User Info */}
               <div className="text-sm text-gray-300">
-                <span className="text-green-400">●</span> {formatAddress(publicKey)}
+                <span className="text-blue-400">👤</span> {user?.username}
+                {user?.loginMethod === 'demo' && <span className="text-yellow-400 ml-1">(Demo)</span>}
               </div>
+              
+              {/* Wallet Status */}
+              {isConnected && publicKey ? (
+                <div className="flex items-center space-x-2">
+                  <div className="text-sm text-gray-300">
+                    <span className="text-green-400">●</span> {formatAddress(publicKey)}
+                  </div>
+                  <Button
+                     onClick={() => disconnect(true)}
+                     className="bg-red-500 hover:bg-red-600 text-white px-2 py-1 text-xs rounded transition-colors duration-200"
+                     title="Desconectar carteira"
+                   >
+                     ✕
+                   </Button>
+                </div>
+              ) : (
+                <Button
+                  onClick={handleConnectClick}
+                  disabled={isLoading}
+                  className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white px-3 py-1 text-sm rounded transition-colors duration-200"
+                >
+                  {isLoading ? 'Connecting...' : 'Connect Wallet'}
+                </Button>
+              )}
+              
+              {/* Dashboard Button */}
               <Button
-                onClick={generateDemoAccount}
-                className="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-lg transition-colors duration-200"
+                onClick={() => router.push('/dashboard')}
+                className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors duration-200"
               >
-                Generate Demo Account
+                Dashboard
               </Button>
+              
+              {/* Logout Button */}
               <Button
-                onClick={disconnect}
+                onClick={handleLogout}
                 className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors duration-200"
               >
-                Disconnect
+                Logout
               </Button>
             </div>
           ) : (
             <div className="flex items-center space-x-3">
               <Button
-                onClick={generateDemoAccount}
+                onClick={handleDemoAccount}
                 className="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-lg transition-colors duration-200"
               >
-                Generate Demo Account
+                Demo Account
+              </Button>
+              <Button
+                onClick={handleLogin}
+                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors duration-200"
+              >
+                Login
               </Button>
               <Button
                 onClick={handleConnectClick}
                 disabled={isLoading}
-                className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white px-4 py-2 rounded-lg transition-colors duration-200"
+                className="bg-purple-600 hover:bg-purple-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white px-4 py-2 rounded-lg transition-colors duration-200"
               >
                 {isLoading ? 'Connecting...' : 'Connect Wallet'}
               </Button>

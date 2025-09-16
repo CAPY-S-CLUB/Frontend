@@ -2,10 +2,12 @@
 
 import { useState, useEffect } from 'react'
 import { useWallet } from '@/lib/WalletProvider'
+import { useAuth } from '@/lib/AuthProvider'
 import { getUserProfile, NFTMetadata, BadgeMetadata } from '@/lib/stellar'
 import LoadingSpinner from '@/components/LoadingSpinner'
 import { Button } from '@/components/ui/button'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/navigation'
+import ProtectedRoute from '@/components/ProtectedRoute'
 
 interface UserProfile {
   hasMembership: boolean
@@ -22,11 +24,11 @@ interface Club {
   joined: boolean
 }
 
-export default function Dashboard() {
+function DashboardContent() {
   const { isConnected, publicKey } = useWallet()
+  const { user, isAuthenticated } = useAuth()
   const router = useRouter()
-  const searchParams = useSearchParams()
-  const isDemoMode = searchParams.get('demo') === 'true'
+  const isDemoMode = user?.loginMethod === 'demo'
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [activeTab, setActiveTab] = useState('membership')
@@ -35,6 +37,8 @@ export default function Dashboard() {
 
   useEffect(() => {
     const loadUserProfile = async () => {
+      if (!isAuthenticated) return
+      
       // Se estiver em modo demo, criar dados fictícios
       if (isDemoMode) {
         setIsLoading(true)
@@ -43,23 +47,21 @@ export default function Dashboard() {
           setUserProfile({
             hasMembership: true,
             membershipNFT: {
-              name: 'Capys Club Membership #1234',
-              description: 'Exclusive membership NFT for Capys Club',
-              image: 'https://via.placeholder.com/300x300?text=Demo+NFT',
-              attributes: []
-            },
+                name: `Capys Club Membership - ${user?.username}`,
+                description: 'Exclusive membership NFT for Capys Club (Demo Mode)',
+                image: 'https://via.placeholder.com/300x300?text=Demo+NFT',
+                attributes: []
+              },
             badges: [
               {
                 name: 'Early Adopter',
                 description: 'One of the first members',
-                image: 'https://via.placeholder.com/100x100?text=Badge1',
-                attributes: []
+                image: 'https://via.placeholder.com/100x100?text=Badge1'
               },
               {
                 name: 'Yacht Owner',
                 description: 'Verified yacht owner',
-                image: 'https://via.placeholder.com/100x100?text=Badge2',
-                attributes: []
+                image: 'https://via.placeholder.com/100x100?text=Badge2'
               }
             ],
             totalBadges: 2
@@ -103,7 +105,7 @@ export default function Dashboard() {
     }
 
     loadUserProfile()
-  }, [isConnected, publicKey, isDemoMode])
+  }, [isDemoMode, isConnected, publicKey, isAuthenticated, user?.username])
 
   // Se não estiver conectado E não estiver em modo demo
   if (!isConnected && !isDemoMode) {
@@ -293,16 +295,8 @@ export default function Dashboard() {
                         </p>
                         
                         <div className="flex items-center justify-between">
-                          <span className={`text-xs px-2 py-1 rounded-full ${
-                            badge.rarity === 'Common' ? 'bg-gray-600 text-gray-200' :
-                            badge.rarity === 'Rare' ? 'bg-blue-600 text-blue-200' :
-                            badge.rarity === 'Epic' ? 'bg-purple-600 text-purple-200' :
-                            'bg-yellow-600 text-yellow-200'
-                          }`}>
-                            {badge.rarity}
-                          </span>
-                          <span className="text-xs text-gray-500">
-                            {badge.category}
+                          <span className="text-xs px-2 py-1 rounded-full bg-gray-600 text-gray-200">
+                            Badge
                           </span>
                         </div>
                       </div>
@@ -352,5 +346,13 @@ export default function Dashboard() {
 
       </div>
     </div>
+  )
+}
+
+export default function Dashboard() {
+  return (
+    <ProtectedRoute>
+      <DashboardContent />
+    </ProtectedRoute>
   )
 }
