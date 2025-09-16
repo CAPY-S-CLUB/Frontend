@@ -91,7 +91,7 @@ export default function Header() {
         {/* Logo */}
         <div className="flex items-center">
           <img 
-            src="/capys-logo.svg" 
+            src="/capys-logo.jpeg" 
             alt="Capys Club" 
             className="h-8 w-auto"
           />
