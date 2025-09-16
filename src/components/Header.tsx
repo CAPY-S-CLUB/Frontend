@@ -93,7 +93,7 @@ export default function Header() {
           <img 
             src="/capys-logo.jpeg" 
             alt="Capys Club" 
-            className="h-8 w-auto"
+            className="h-12 w-auto"
           />
         </div>
 
