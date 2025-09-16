@@ -82,7 +82,7 @@ export default function AdminPanel() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-900 text-white -mt-20">
+    <div className="min-h-screen bg-slate-900 text-white pt-20">
       {/* Admin Header */}
       <header className="bg-gray-800 border-b border-gray-700 px-6 py-4">
         <div className="flex items-center justify-between max-w-7xl mx-auto">

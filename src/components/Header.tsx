@@ -98,7 +98,7 @@ export default function Header() {
               </div>
               <Button
                 onClick={generateDemoAccount}
-                className="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-lg transition-colors duration-200"
+                className="bg-gradient-to-r from-gold-500 to-gold-600 hover:from-gold-600 hover:to-gold-700 text-white px-3 py-1.5 text-sm rounded-lg transition-all duration-200 shadow-lg hover:shadow-gold-500/25"
               >
                 Generate Demo Account
               </Button>
@@ -113,14 +113,14 @@ export default function Header() {
             <div className="flex items-center space-x-3">
               <Button
                 onClick={generateDemoAccount}
-                className="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-lg transition-colors duration-200"
+                className="bg-gradient-to-r from-gold-500 to-gold-600 hover:from-gold-600 hover:to-gold-700 text-white px-3 py-1.5 text-sm rounded-lg transition-all duration-200 shadow-lg hover:shadow-gold-500/25"
               >
                 Generate Demo Account
               </Button>
               <Button
                 onClick={handleConnectClick}
                 disabled={isLoading}
-                className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white px-4 py-2 rounded-lg transition-colors duration-200"
+                className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 disabled:bg-gray-600 disabled:cursor-not-allowed text-white px-3 py-1.5 text-sm rounded-lg transition-all duration-200 shadow-lg hover:shadow-purple-500/25"
               >
                 {isLoading ? 'Connecting...' : 'Connect Wallet'}
               </Button>

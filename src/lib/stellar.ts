@@ -95,7 +95,7 @@ export async function getMembershipNFTMetadata(userAddress: string): Promise<NFT
     return {
       name: 'Capys Club Membership #1234',
       description: 'Exclusive membership NFT for Capys Club members',
-      image: `https://api.dicebear.com/7.x/avataaars/svg?seed=${userAddress}&backgroundColor=1f2937&textColor=ffffff`,
+      image: `https://api.dicebear.com/7.x/big-smile/svg?seed=${userAddress}&backgroundColor=1f2937&textColor=ffffff`,
       attributes: [
         { trait_type: 'Membership Level', value: 'Gold' },
         { trait_type: 'Join Date', value: '2024-01-15' },

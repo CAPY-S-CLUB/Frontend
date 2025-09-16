@@ -30,6 +30,7 @@ export default function Dashboard() {
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [activeTab, setActiveTab] = useState('membership')
+  const [showClubDetails, setShowClubDetails] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [clubs, setClubs] = useState<Club[]>([])
 
@@ -135,7 +136,7 @@ export default function Dashboard() {
           <p className="text-xl text-gray-300 mb-6">You need a Capys Club membership NFT to access this dashboard</p>
           <div className="bg-gray-800 rounded-lg p-6 max-w-md mx-auto">
             <p className="text-sm text-gray-400">
-              Your wallet: <span className="text-blue-400 font-mono">{publicKey?.slice(0, 8)}...{publicKey?.slice(-8)}</span>
+              Your wallet: <span className="text-purple-400 font-mono">{publicKey?.slice(0, 8)}...{publicKey?.slice(-8)}</span>
             </p>
           </div>
         </div>
@@ -177,25 +178,25 @@ export default function Dashboard() {
         {/* Navigation Tabs */}
         <div className="flex border-b border-gray-700">
           <button 
-            className={`px-4 py-2 font-medium ${activeTab === 'membership' ? 'text-blue-400 border-b-2 border-blue-400' : 'text-gray-400 hover:text-gray-300'}`}
+            className={`px-4 py-2 font-medium ${activeTab === 'membership' ? 'text-purple-400 border-b-2 border-purple-400' : 'text-gray-400 hover:text-gray-300'}`}
             onClick={() => setActiveTab('membership')}
           >
             Membership
           </button>
           <button 
-            className={`px-4 py-2 font-medium ${activeTab === 'clubs' ? 'text-blue-400 border-b-2 border-blue-400' : 'text-gray-400 hover:text-gray-300'}`}
+            className={`px-4 py-2 font-medium ${activeTab === 'clubs' ? 'text-purple-400 border-b-2 border-purple-400' : 'text-gray-400 hover:text-gray-300'}`}
             onClick={() => setActiveTab('clubs')}
           >
             My Clubs
           </button>
           <button 
-            className={`px-4 py-2 font-medium ${activeTab === 'discover' ? 'text-blue-400 border-b-2 border-blue-400' : 'text-gray-400 hover:text-gray-300'}`}
+            className={`px-4 py-2 font-medium ${activeTab === 'discover' ? 'text-purple-400 border-b-2 border-purple-400' : 'text-gray-400 hover:text-gray-300'}`}
             onClick={() => setActiveTab('discover')}
           >
             Discover
           </button>
           <button 
-            className={`px-4 py-2 font-medium ${activeTab === 'admin' ? 'text-blue-400 border-b-2 border-blue-400' : 'text-gray-400 hover:text-gray-300'}`}
+            className={`px-4 py-2 font-medium ${activeTab === 'admin' ? 'text-purple-400 border-b-2 border-purple-400' : 'text-gray-400 hover:text-gray-300'}`}
             onClick={() => router.push(isDemoMode ? '/admin?demo=true' : '/admin')}
           >
             Admin
@@ -219,7 +220,7 @@ export default function Dashboard() {
                       className="w-full h-full object-cover"
                       onError={(e) => {
                         const target = e.target as HTMLImageElement
-                        target.src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${publicKey}&backgroundColor=1f2937&textColor=ffffff`
+                        target.src = `https://api.dicebear.com/7.x/big-smile/svg?seed=${publicKey}&backgroundColor=1f2937&textColor=ffffff`
                       }}
                     />
                   </div>
@@ -295,7 +296,7 @@ export default function Dashboard() {
                         <div className="flex items-center justify-between">
                           <span className={`text-xs px-2 py-1 rounded-full ${
                             badge.rarity === 'Common' ? 'bg-gray-600 text-gray-200' :
-                            badge.rarity === 'Rare' ? 'bg-blue-600 text-blue-200' :
+                            badge.rarity === 'Rare' ? 'bg-purple-600 text-purple-200' :
                             badge.rarity === 'Epic' ? 'bg-purple-600 text-purple-200' :
                             'bg-yellow-600 text-yellow-200'
                           }`}>
@@ -328,10 +329,95 @@ export default function Dashboard() {
             <h2 className="text-2xl font-bold text-white">
               My Clubs
             </h2>
-            <div className="text-center py-12">
-              <div className="text-6xl mb-4">🏛️</div>
-              <h3 className="text-xl font-semibold text-gray-400 mb-2">No Clubs Joined Yet</h3>
-              <p className="text-gray-500">Join clubs to connect with like-minded members!</p>
+            
+            {/* Clubs Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {/* Yacht Club Example */}
+              <div className="bg-gray-800 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 border border-gray-700">
+                {/* Club Header with Logo */}
+                <div className="relative h-32 bg-gradient-to-br from-blue-900 to-blue-700 flex items-center justify-center overflow-hidden">
+                  <img 
+                    src="https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80"
+                    alt="Elite Yacht Club"
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement
+                      target.style.display = 'none'
+                      const parent = target.parentElement
+                      if (parent) {
+                        parent.innerHTML = '<div class="text-6xl">⛵</div>'
+                      }
+                    }}
+                  />
+                  <div className="absolute top-3 right-3">
+                    <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full font-semibold">
+                      JOINED
+                    </span>
+                  </div>
+                </div>
+                
+                {/* Club Info */}
+                <div className="p-6">
+                  <h3 className="text-xl font-bold text-white mb-2">
+                    Elite Yacht Club
+                  </h3>
+                  <p className="text-gray-400 text-sm mb-4 line-clamp-3">
+                    Exclusive community for yacht enthusiasts. Experience luxury sailing, networking events, and premium marina access worldwide.
+                  </p>
+                  
+                  {/* Club Stats */}
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center space-x-4">
+                      <div className="text-center">
+                        <div className="text-lg font-bold text-purple-400">247</div>
+                        <div className="text-xs text-gray-500">Members</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-lg font-bold text-purple-400">12</div>
+                        <div className="text-xs text-gray-500">Events</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-lg font-bold text-purple-400">★ 4.9</div>
+                        <div className="text-xs text-gray-500">Rating</div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Club Tags */}
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    <span className="bg-blue-600 text-blue-200 text-xs px-2 py-1 rounded-full">
+                      Luxury
+                    </span>
+                    <span className="bg-purple-600 text-purple-200 text-xs px-2 py-1 rounded-full">
+                      Sailing
+                    </span>
+                    <span className="bg-green-600 text-green-200 text-xs px-2 py-1 rounded-full">
+                      Networking
+                    </span>
+                  </div>
+                  
+                  {/* Action Buttons */}
+                  <div className="flex space-x-2">
+                    <button 
+                      onClick={() => setShowClubDetails(true)}
+                      className="flex-1 bg-purple-600 hover:bg-purple-700 text-white text-sm font-semibold py-2 px-4 rounded-lg transition-colors duration-200"
+                    >
+                      View Club
+                    </button>
+                    <button className="bg-gray-700 hover:bg-gray-600 text-gray-300 text-sm font-semibold py-2 px-4 rounded-lg transition-colors duration-200">
+                      Chat
+                    </button>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Placeholder for more clubs */}
+              <div className="bg-gray-800 rounded-xl border-2 border-dashed border-gray-600 flex items-center justify-center h-80">
+                <div className="text-center text-gray-500">
+                  <div className="text-4xl mb-2">+</div>
+                  <p className="text-sm">Discover More Clubs</p>
+                </div>
+              </div>
             </div>
           </section>
         )}
@@ -348,6 +434,122 @@ export default function Dashboard() {
               <p className="text-gray-500">Find clubs that match your interests and passions!</p>
             </div>
           </section>
+        )}
+        
+        {/* Club Details Modal */}
+        {showClubDetails && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-gray-800 rounded-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+              {/* Modal Header */}
+              <div className="relative h-48 bg-gradient-to-br from-blue-900 to-blue-700 rounded-t-xl overflow-hidden">
+                <img 
+                  src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAoACgDASIAAhEBAxEB/8QAGwAAAQUBAQAAAAAAAAAAAAAABgABAgMEBQf/xAAsEAACAQMDAgUEAwEAAAAAAAABAgMABBEFEiExQVEGEyJhcTKBkaGxwdHw/8QAGAEAAwEBAAAAAAAAAAAAAAAAAAECAwT/xAAeEQACAgICAwEAAAAAAAAAAAABAgARAyESMUFRYf/aAAwDAQACEQMRAD8A9mooooAKKKKACiiigAooooAKKKKACiiigD/2Q=="
+                  alt="Elite Yacht Club"
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-black bg-opacity-30" />
+                <button 
+                  onClick={() => setShowClubDetails(false)}
+                  className="absolute top-4 right-4 text-white hover:text-gray-300 text-2xl font-bold"
+                >
+                  ×
+                </button>
+                <div className="absolute bottom-4 left-6">
+                  <h1 className="text-3xl font-bold text-white mb-2">Elite Yacht Club</h1>
+                  <div className="flex items-center space-x-4">
+                    <span className="bg-green-500 text-white text-sm px-3 py-1 rounded-full font-semibold">
+                      MEMBER
+                    </span>
+                    <span className="text-white text-sm">★ 4.9 Rating</span>
+                    <span className="text-white text-sm">247 Members</span>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Modal Content */}
+              <div className="p-6">
+                {/* Club Description */}
+                <div className="mb-8">
+                  <h2 className="text-2xl font-bold text-white mb-4">About the Club</h2>
+                  <p className="text-gray-300 leading-relaxed mb-4">
+                    The Elite Yacht Club is an exclusive community for yacht enthusiasts and luxury maritime lifestyle aficionados. 
+                    Founded in 1985, we offer unparalleled access to premium marinas worldwide, exclusive sailing events, 
+                    and networking opportunities with fellow yacht owners and maritime professionals.
+                  </p>
+                  <p className="text-gray-300 leading-relaxed">
+                    Our members enjoy access to over 200 premium marinas globally, concierge services, 
+                    yacht maintenance partnerships, and exclusive social events in the world's most beautiful coastal destinations.
+                  </p>
+                </div>
+                
+                {/* Club Features */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                  <div>
+                    <h3 className="text-xl font-bold text-white mb-4">Club Benefits</h3>
+                    <ul className="space-y-2 text-gray-300">
+                      <li className="flex items-center"><span className="text-green-400 mr-2">✓</span> Access to 200+ premium marinas</li>
+                      <li className="flex items-center"><span className="text-green-400 mr-2">✓</span> 24/7 concierge services</li>
+                      <li className="flex items-center"><span className="text-green-400 mr-2">✓</span> Exclusive sailing events</li>
+                      <li className="flex items-center"><span className="text-green-400 mr-2">✓</span> Yacht maintenance partnerships</li>
+                      <li className="flex items-center"><span className="text-green-400 mr-2">✓</span> Global networking events</li>
+                      <li className="flex items-center"><span className="text-green-400 mr-2">✓</span> Priority booking at luxury resorts</li>
+                    </ul>
+                  </div>
+                  
+                  <div>
+                    <h3 className="text-xl font-bold text-white mb-4">Upcoming Events</h3>
+                    <div className="space-y-3">
+                      <div className="bg-gray-700 p-3 rounded-lg">
+                        <h4 className="text-white font-semibold">Monaco Grand Prix Regatta</h4>
+                        <p className="text-gray-400 text-sm">May 25-28, 2024 • Monaco</p>
+                      </div>
+                      <div className="bg-gray-700 p-3 rounded-lg">
+                        <h4 className="text-white font-semibold">Caribbean Sailing Championship</h4>
+                        <p className="text-gray-400 text-sm">June 15-22, 2024 • Barbados</p>
+                      </div>
+                      <div className="bg-gray-700 p-3 rounded-lg">
+                        <h4 className="text-white font-semibold">Mediterranean Yacht Week</h4>
+                        <p className="text-gray-400 text-sm">July 10-17, 2024 • French Riviera</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Club Stats */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                  <div className="bg-gray-700 p-4 rounded-lg text-center">
+                    <div className="text-2xl font-bold text-purple-400">247</div>
+                    <div className="text-gray-400 text-sm">Active Members</div>
+                  </div>
+                  <div className="bg-gray-700 p-4 rounded-lg text-center">
+                    <div className="text-2xl font-bold text-purple-400">200+</div>
+                    <div className="text-gray-400 text-sm">Partner Marinas</div>
+                  </div>
+                  <div className="bg-gray-700 p-4 rounded-lg text-center">
+                    <div className="text-2xl font-bold text-purple-400">12</div>
+                    <div className="text-gray-400 text-sm">Annual Events</div>
+                  </div>
+                  <div className="bg-gray-700 p-4 rounded-lg text-center">
+                    <div className="text-2xl font-bold text-purple-400">39</div>
+                    <div className="text-gray-400 text-sm">Years Active</div>
+                  </div>
+                </div>
+                
+                {/* Action Buttons */}
+                <div className="flex space-x-4">
+                  <button className="flex-1 bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200">
+                    Join Events
+                  </button>
+                  <button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200">
+                    Club Chat
+                  </button>
+                  <button className="bg-gray-700 hover:bg-gray-600 text-gray-300 font-semibold py-3 px-6 rounded-lg transition-colors duration-200">
+                    Share Club
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
         )}
 
       </div>
