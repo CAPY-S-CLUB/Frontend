@@ -138,7 +138,7 @@ export default function WalletModal({ isOpen, onClose, onSelectWallet }: WalletM
           {/* Footer */}
           <div className="mt-6 pt-4 border-t border-gray-700">
             <p className="text-gray-400 text-xs text-center">
-              Don't have a wallet?{' '}
+              Don&apos;t have a wallet?{' '}
               <a
                 href="https://www.stellar.org/wallets"
                 target="_blank"
