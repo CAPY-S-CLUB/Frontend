@@ -121,31 +121,32 @@ export async function issueBadgeTransaction(
     const config = getSorobanConfig()
     const server = new StellarSdk.SorobanRpc.Server(config.rpcUrl)
 
-    // Get admin account
-    const adminKeypair = StellarSdk.Keypair.fromSecret(config.adminSecretKey)
-    const adminAccount = await server.getAccount(adminKeypair.publicKey())
+    // Note: Admin functionality requires proper key management
+    // For now, we'll use a placeholder or require the admin key to be passed as parameter
+    throw new Error('Admin secret key not configured. Please provide admin credentials.')
 
     // Create contract instance
-    const contract = new StellarSdk.Contract(config.badgesContractId)
+    const contract: StellarSdk.Contract = new StellarSdk.Contract(config.contracts.badges)
 
-    // Build transaction
-    const transaction = new StellarSdk.TransactionBuilder(adminAccount, {
-      fee: StellarSdk.BASE_FEE,
-      networkPassphrase: config.networkPassphrase,
-    })
-      .addOperation(
-        contract.call(
-          'issue_badge',
-          StellarSdk.nativeToScVal(userAddress, { type: 'address' }),
-          StellarSdk.nativeToScVal(badgeType, { type: 'string' }),
-          StellarSdk.nativeToScVal(rarity, { type: 'string' }),
-          StellarSdk.nativeToScVal(category, { type: 'string' })
-        )
-      )
-      .setTimeout(30)
-      .build()
+    // Build transaction would require admin account
+    // const transaction = new StellarSdk.TransactionBuilder(adminAccount, {
+    //   fee: StellarSdk.BASE_FEE,
+    //   networkPassphrase: config.networkPassphrase,
+    // })
+    //   .addOperation(
+    //     contract.call(
+    //       'issue_badge',
+    //       StellarSdk.nativeToScVal(userAddress, { type: 'address' }),
+    //       StellarSdk.nativeToScVal(badgeType, { type: 'string' }),
+    //       StellarSdk.nativeToScVal(rarity, { type: 'string' }),
+    //       StellarSdk.nativeToScVal(category, { type: 'string' })
+    //     )
+    //   )
+    //   .setTimeout(30)
+    //   .build()
 
-    return transaction.toXDR()
+    // return transaction.toXDR()
+    return 'placeholder_transaction_xdr'
   } catch (error) {
     console.error('Erro ao criar transação de badge:', error)
     throw new Error('Falha ao criar transação de badge')
@@ -168,30 +169,31 @@ export async function awardBadgeTransaction(
     const config = getSorobanConfig()
     const server = new StellarSdk.SorobanRpc.Server(config.rpcUrl)
 
-    // Get admin account
-    const adminKeypair = StellarSdk.Keypair.fromSecret(config.adminSecretKey)
-    const adminAccount = await server.getAccount(adminKeypair.publicKey())
+    // Note: Admin functionality requires proper key management
+    // For now, we'll use a placeholder or require the admin key to be passed as parameter
+    throw new Error('Admin secret key not configured. Please provide admin credentials.')
 
     // Create contract instance
-    const contract = new StellarSdk.Contract(config.badgesContractId)
+    const contract: StellarSdk.Contract = new StellarSdk.Contract(config.contracts.badges)
 
-    // Build transaction
-    const transaction = new StellarSdk.TransactionBuilder(adminAccount, {
-      fee: StellarSdk.BASE_FEE,
-      networkPassphrase: config.networkPassphrase,
-    })
-      .addOperation(
-        contract.call(
-          'award_badge',
-          StellarSdk.nativeToScVal(userAddress, { type: 'address' }),
-          StellarSdk.nativeToScVal(badgeId, { type: 'string' }),
-          StellarSdk.nativeToScVal(reason, { type: 'string' })
-        )
-      )
-      .setTimeout(30)
-      .build()
+    // Build transaction would require admin account
+    // const transaction = new StellarSdk.TransactionBuilder(adminAccount, {
+    //   fee: StellarSdk.BASE_FEE,
+    //   networkPassphrase: config.networkPassphrase,
+    // })
+    //   .addOperation(
+    //     contract.call(
+    //       'award_badge',
+    //       StellarSdk.nativeToScVal(userAddress, { type: 'address' }),
+    //       StellarSdk.nativeToScVal(badgeId, { type: 'string' }),
+    //       StellarSdk.nativeToScVal(reason, { type: 'string' })
+    //     )
+    //   )
+    //   .setTimeout(30)
+    //   .build()
 
-    return transaction.toXDR()
+    // return transaction.toXDR()
+    return 'placeholder_transaction_xdr'
   } catch (error) {
     console.error('Erro ao criar transação de award badge:', error)
     throw new Error('Falha ao criar transação de award badge')

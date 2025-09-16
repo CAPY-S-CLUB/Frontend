@@ -53,7 +53,7 @@ export function LoadingSpinner({
       case 'success':
         return <CheckCircle className={`${sizeClasses[size]} text-green-500`} />
       case 'error':
-        return <XCircle className={`${sizeClasses[size]} text-red-500`} />
+        return <XCircle className={`${sizeClasses[size]} text-gray-500`} />
       case 'warning':
         return <AlertCircle className={`${sizeClasses[size]} text-yellow-500`} />
       default:
@@ -64,11 +64,11 @@ export function LoadingSpinner({
   const getStateColor = () => {
     switch (state) {
       case 'loading':
-        return 'text-blue-600'
+        return 'text-yellow-600'
       case 'success':
         return 'text-green-600'
       case 'error':
-        return 'text-red-600'
+        return 'text-gray-600'
       case 'warning':
         return 'text-yellow-600'
       default:
@@ -107,11 +107,11 @@ export function TransactionFeedback({
   const getBackgroundColor = () => {
     switch (state) {
       case 'loading':
-        return 'bg-blue-50 border-blue-200'
+        return 'bg-yellow-50 border-yellow-200'
       case 'success':
         return 'bg-green-50 border-green-200'
       case 'error':
-        return 'bg-red-50 border-red-200'
+        return 'bg-gray-50 border-gray-200'
       case 'warning':
         return 'bg-yellow-50 border-yellow-200'
       default:
@@ -284,7 +284,7 @@ export function StepProgress({ steps, currentStep }: StepProgressProps) {
             <div className={`
               w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium
               ${isCompleted ? 'bg-green-500 text-white' : ''}
-              ${hasError ? 'bg-red-500 text-white' : ''}
+              ${hasError ? 'bg-gray-500 text-white' : ''}
               ${isActive && !isCompleted && !hasError ? 'bg-blue-500 text-white' : ''}
               ${!isActive && !isCompleted && !hasError ? 'bg-gray-200 text-gray-600' : ''}
             `}>
@@ -300,7 +300,7 @@ export function StepProgress({ steps, currentStep }: StepProgressProps) {
             </div>
             <span className={`
               ${isActive ? 'font-medium text-gray-900' : 'text-gray-600'}
-              ${hasError ? 'text-red-600' : ''}
+              ${hasError ? 'text-gray-600' : ''}
               ${isCompleted ? 'text-green-600' : ''}
             `}>
               {step.label}

@@ -1,93 +1,117 @@
-import GetStartedButton from '@/components/GetStartedButton'
-
 export default function Home() {
   return (
     <main className="relative min-h-screen overflow-hidden">
-      {/* Luxury gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900" />
-      
-      {/* Animated gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 via-purple-600/20 to-pink-600/20 animate-pulse" />
-      
-      {/* Geometric patterns for luxury feel */}
-      <div className="absolute inset-0 opacity-10">
-        <div className="absolute top-20 left-20 w-32 h-32 border border-white/20 rotate-45" />
-        <div className="absolute top-40 right-32 w-24 h-24 border border-white/20 rotate-12" />
-        <div className="absolute bottom-32 left-1/4 w-40 h-40 border border-white/20 rotate-45" />
-        <div className="absolute bottom-20 right-20 w-28 h-28 border border-white/20 rotate-12" />
+      {/* Premium Floating particles */}
+      <div className="floating-particles">
+        <div className="particle"></div>
+        <div className="particle"></div>
+        <div className="particle"></div>
+        <div className="particle"></div>
+        <div className="particle"></div>
+        <div className="particle"></div>
+        <div className="particle"></div>
+        <div className="particle"></div>
+        <div className="particle"></div>
       </div>
+      
+      {/* Premium star particles */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="star-particle w-1 h-1 top-[20%] left-[15%]" style={{animationDelay: '0s'}}></div>
+        <div className="star-particle w-1.5 h-1.5 top-[35%] left-[80%]" style={{animationDelay: '1s'}}></div>
+        <div className="star-particle w-1 h-1 top-[60%] left-[25%]" style={{animationDelay: '2s'}}></div>
+        <div className="star-particle w-2 h-2 top-[15%] left-[70%]" style={{animationDelay: '3s'}}></div>
+        <div className="star-particle w-1 h-1 top-[80%] left-[60%]" style={{animationDelay: '4s'}}></div>
+        <div className="star-particle w-1.5 h-1.5 top-[25%] left-[45%]" style={{animationDelay: '5s'}}></div>
+        <div className="star-particle w-1 h-1 top-[70%] left-[85%]" style={{animationDelay: '6s'}}></div>
+        <div className="star-particle w-2 h-2 top-[45%] left-[10%]" style={{animationDelay: '7s'}}></div>
+      </div>
+      
+      {/* Premium glow effects */}
+      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-gradient-to-r from-yellow-400/10 to-amber-500/10 rounded-full blur-3xl animate-pulse" />
+      <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-gradient-to-r from-amber-400/10 to-yellow-500/10 rounded-full blur-3xl animate-pulse" style={{animationDelay: '2s'}} />
+      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-gradient-to-r from-yellow-500/10 to-amber-600/10 rounded-full blur-3xl animate-pulse" style={{animationDelay: '4s'}} />
       
       {/* Main content */}
       <div className="relative z-20 flex flex-col items-center justify-center min-h-screen text-center px-4 sm:px-8">
-        {/* Hero title with luxury typography */}
-        <h1 className="text-5xl sm:text-7xl lg:text-8xl font-bold tracking-tight text-white mb-6">
-          <span className="bg-gradient-to-r from-white via-gray-200 to-white bg-clip-text text-transparent">
-            Your Club,
-          </span>
+        {/* Premium Hero title */}
+        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight mb-6 uppercase relative premium-title font-extrabold">
+          Your Club,
           <br />
-          <span className="bg-gradient-to-r from-gold-400 via-gold-300 to-gold-400 bg-clip-text text-transparent">
-            Your Rules.
+          <span className="text-slate-300 font-black">
+            Your Rules
           </span>
         </h1>
         
-        {/* Subtitle with premium styling */}
-        <p className="mt-6 text-xl sm:text-2xl text-gray-300 max-w-4xl leading-relaxed mb-12">
-          Build your exclusive club for the world's most discerning members.
-          <br className="hidden sm:block" />
-          <span className="text-gold-400 font-medium">Connect your wallet</span> to access the private community.
+        {/* Premium Subtitle */}
+        <p className="mt-6 text-xl sm:text-2xl premium-subtitle max-w-4xl leading-relaxed mb-12">
+          
         </p>
         
-        {/* Features grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 mb-12 max-w-4xl">
-          <div className="text-center p-6 rounded-lg bg-white/5 backdrop-blur-sm border border-white/10">
-            <div className="w-12 h-12 mx-auto mb-4 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
-              <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
+        {/* Premium Features grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16 max-w-6xl">
+          <div className="premium-card group relative p-8 rounded-2xl transition-all duration-300 hover:scale-105">
+            <div className="relative z-10">
+              <div className="w-16 h-16 bg-gradient-to-br from-premium-gold to-premium-gold-light rounded-xl mb-6 flex items-center justify-center">
+                <svg className="w-8 h-8 text-premium-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <h3 className="text-2xl font-bold premium-text mb-4">Verified Members</h3>
+              <p className="premium-subtitle leading-relaxed">Exclusive community of authenticated yacht owners</p>
             </div>
-            <h3 className="text-lg font-semibold text-white mb-2">Verified Members</h3>
-            <p className="text-gray-400 text-sm">Exclusive community of authenticated yacht owners</p>
+            <h3 className="text-lg font-bold text-white mb-2">Verified Members</h3>
+            <p className="text-sm text-gray-400 leading-relaxed">Exclusive community of authenticated yacht owners</p>
           </div>
           
-          <div className="text-center p-6 rounded-lg bg-white/5 backdrop-blur-sm border border-white/10">
-            <div className="w-12 h-12 mx-auto mb-4 bg-gradient-to-r from-purple-500 to-pink-600 rounded-full flex items-center justify-center">
-              <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-              </svg>
+          <div className="premium-card group relative p-8 rounded-2xl transition-all duration-300 hover:scale-105">
+            <div className="relative z-10">
+              <div className="w-16 h-16 bg-gradient-to-br from-premium-gold to-premium-gold-light rounded-xl mb-6 flex items-center justify-center">
+                <svg className="w-8 h-8 text-premium-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+              </div>
+              <h3 className="text-2xl font-bold premium-text mb-4">Secure Platform</h3>
+              <p className="premium-subtitle leading-relaxed">Blockchain-powered security and privacy</p>
             </div>
-            <h3 className="text-lg font-semibold text-white mb-2">Secure Platform</h3>
-            <p className="text-gray-400 text-sm">Blockchain-powered security and privacy</p>
+            <h3 className="text-lg font-bold text-white mb-2">Secure Platform</h3>
+            <p className="text-sm text-gray-400 leading-relaxed">Blockchain-powered security and privacy</p>
           </div>
           
-          <div className="text-center p-6 rounded-lg bg-white/5 backdrop-blur-sm border border-white/10">
-            <div className="w-12 h-12 mx-auto mb-4 bg-gradient-to-r from-gold-500 to-yellow-600 rounded-full flex items-center justify-center">
-              <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
-              </svg>
+          <div className="premium-card group relative p-8 rounded-2xl transition-all duration-300 hover:scale-105">
+            <div className="relative z-10">
+              <div className="w-16 h-16 bg-gradient-to-br from-premium-gold to-premium-gold-light rounded-xl mb-6 flex items-center justify-center">
+                <svg className="w-8 h-8 text-premium-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                </svg>
+              </div>
+              <h3 className="text-2xl font-bold premium-text mb-4">Premium Experience</h3>
+              <p className="premium-subtitle leading-relaxed">Curated content and exclusive events</p>
             </div>
-            <h3 className="text-lg font-semibold text-white mb-2">Premium Experience</h3>
-            <p className="text-gray-400 text-sm">Curated content and exclusive events</p>
+            <h3 className="text-lg font-bold text-white mb-2">Premium Experience</h3>
+            <p className="text-sm text-gray-400 leading-relaxed">Curated content and exclusive events</p>
           </div>
         </div>
         
-        {/* CTA Section */}
-        <div className="relative z-30">
-          <GetStartedButton />
+        {/* Premium Call to action */}
+        <div className="mb-16">
+          <button className="premium-button group relative px-12 py-4 text-lg font-bold rounded-full transition-all duration-300 transform hover:scale-105">
+            <span className="relative z-10"></span>
+          </button>
         </div>
         
-        {/* Trust indicators */}
-        <div className="mt-12 flex items-center space-x-8 text-gray-400 text-sm">
-          <div className="flex items-center">
-            <span className="w-2 h-2 bg-green-500 rounded-full mr-2" />
-            Blockchain Secured
+        {/* Premium Trust indicators */}
+        <div className="mt-12 flex flex-wrap justify-center items-center gap-8 premium-subtitle text-sm">
+          <div className="flex items-center gap-2">
+            <div className="w-2 h-2 bg-premium-gold rounded-full animate-pulse" />
+            <span></span>
           </div>
-          <div className="flex items-center">
-            <span className="w-2 h-2 bg-blue-500 rounded-full mr-2" />
-            24/7 Support
+          <div className="flex items-center gap-2">
+            <div className="w-2 h-2 bg-premium-gold rounded-full animate-pulse" style={{animationDelay: '1s'}} />
+            <span></span>
           </div>
-          <div className="flex items-center">
-            <span className="w-2 h-2 bg-purple-500 rounded-full mr-2" />
-            Premium Community
+          <div className="flex items-center gap-2">
+            <div className="w-2 h-2 bg-premium-gold rounded-full animate-pulse" style={{animationDelay: '2s'}} />
+            <span></span>
           </div>
         </div>
       </div>

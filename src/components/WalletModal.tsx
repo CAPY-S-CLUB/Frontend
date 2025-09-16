@@ -25,13 +25,13 @@ interface WalletModalProps {
 // Usando os IDs corretos do @creit.tech/stellar-wallets-kit
 const SUPPORTED_WALLETS: WalletOption[] = [
   {
-    id: FREIGHTER_ID,
+    id: 'freighter',
     name: 'Freighter',
     icon: '🚀',
     description: 'Browser extension wallet for Stellar'
   },
   {
-    id: ALBEDO_ID,
+    id: 'albedo',
     name: 'Albedo',
     icon: '🌟',
     description: 'Web-based Stellar wallet'
@@ -121,11 +121,11 @@ export default function WalletModal({ isOpen, onClose, onSelectWallet }: WalletM
                   <div className="text-2xl">{wallet.icon}</div>
                   <div className="flex-1">
                     <div className="flex items-center justify-between">
-                      <h3 className="text-white font-semibold group-hover:text-blue-400 transition-colors">
+                      <h3 className="text-white font-semibold group-hover:text-yellow-400 transition-colors">
                         {wallet.name}
                       </h3>
                       {isConnecting === wallet.id && (
-                        <div className="animate-spin rounded-full h-4 w-4 border-2 border-blue-400 border-t-transparent"></div>
+                        <div className="animate-spin rounded-full h-4 w-4 border-2 border-yellow-400 border-t-transparent"></div>
                       )}
                     </div>
                     <p className="text-gray-400 text-sm mt-1">{wallet.description}</p>

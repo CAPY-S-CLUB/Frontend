@@ -90,20 +90,18 @@ export default function Header() {
       <div className="flex items-center justify-between max-w-7xl mx-auto">
         {/* Logo */}
         <div className="flex items-center">
-          <h1 className="text-2xl font-bold text-white">
-            Capys Club
-          </h1>
+          <img 
+            src="/capys-logo.svg" 
+            alt="Capys Club" 
+            className="h-8 w-auto"
+          />
         </div>
 
         {/* User Authentication and Wallet */}
         <div className="flex items-center space-x-4">
           {isAuthenticated ? (
             <div className="flex items-center space-x-3">
-              {/* User Info */}
-              <div className="text-sm text-gray-300">
-                <span className="text-blue-400">👤</span> {user?.username}
-                {user?.loginMethod === 'demo' && <span className="text-yellow-400 ml-1">(Demo)</span>}
-              </div>
+
               
               {/* Wallet Status */}
               {isConnected && publicKey ? (
@@ -123,7 +121,7 @@ export default function Header() {
                 <Button
                   onClick={handleConnectClick}
                   disabled={isLoading}
-                  className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white px-3 py-1 text-sm rounded transition-colors duration-200"
+                  className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white px-6 py-3 rounded-full transition-colors duration-200 bg-gradient-to-r from-blue-600 to-blue-700 border border-blue-500"
                 >
                   {isLoading ? 'Connecting...' : 'Connect Wallet'}
                 </Button>
@@ -132,7 +130,7 @@ export default function Header() {
               {/* Dashboard Button */}
               <Button
                 onClick={() => router.push('/dashboard')}
-                className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors duration-200"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-full transition-colors duration-200 bg-gradient-to-r from-blue-600 to-blue-700 border border-blue-500"
               >
                 Dashboard
               </Button>
@@ -140,29 +138,23 @@ export default function Header() {
               {/* Logout Button */}
               <Button
                 onClick={handleLogout}
-                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors duration-200"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-full transition-colors duration-200 bg-gradient-to-r from-blue-600 to-blue-700 border border-blue-500"
               >
                 Logout
               </Button>
             </div>
           ) : (
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center justify-center space-x-4">
               <Button
                 onClick={handleDemoAccount}
-                className="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-lg transition-colors duration-200"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-full transition-colors duration-200 bg-gradient-to-r from-blue-600 to-blue-700 border border-blue-500"
               >
                 Demo Account
               </Button>
               <Button
-                onClick={handleLogin}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors duration-200"
-              >
-                Login
-              </Button>
-              <Button
                 onClick={handleConnectClick}
                 disabled={isLoading}
-                className="bg-purple-600 hover:bg-purple-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white px-4 py-2 rounded-lg transition-colors duration-200"
+                className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white px-6 py-3 rounded-full transition-colors duration-200 bg-gradient-to-r from-blue-600 to-blue-700 border border-blue-500"
               >
                 {isLoading ? 'Connecting...' : 'Connect Wallet'}
               </Button>

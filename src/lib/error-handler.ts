@@ -228,9 +228,7 @@ export async function withErrorHandling<T>(
     const data = await retryWithBackoff(operation, maxRetries)
     return { success: true, data }
   } catch (error) {
-    const blockchainError = error instanceof Error && 'type' in error 
-      ? error as BlockchainError
-      : createBlockchainError(error, context)
+    const blockchainError = createBlockchainError(error, context)
     
     logError(blockchainError)
     return { success: false, error: blockchainError }
@@ -249,10 +247,15 @@ export async function checkNetworkHealth(): Promise<{
   
   try {
     const stellarConfig = getStellarConfig()
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), stellarConfig.timeout.connection)
+    
     const response = await fetch(`${stellarConfig.horizonUrl}/`, {
       method: 'GET',
-      timeout: stellarConfig.timeout.connection
+      signal: controller.signal
     })
+    
+    clearTimeout(timeoutId)
     stellar = response.ok
   } catch (error) {
     errors.push(createBlockchainError(error, 'Verificação de saúde do Stellar'))

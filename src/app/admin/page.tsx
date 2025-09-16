@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { useWallet } from '@/lib/WalletProvider'
 import { useHeader } from '@/lib/HeaderProvider'
 import ConnectButton from '@/components/ConnectButton'
+import { clubService, Club as ApiClub, CreateClubData } from '@/services/clubService'
 
 interface User {
   id: string
@@ -15,13 +16,8 @@ interface User {
   joinDate: string
 }
 
-interface Club {
-  id: string
-  name: string
-  members: number
-  status: 'active' | 'inactive'
-  createdDate: string
-}
+// Usando interface do clubService
+type Club = ApiClub
 
 export default function AdminPanel() {
   const router = useRouter()
@@ -40,6 +36,24 @@ export default function AdminPanel() {
       showHeader()
     }
   }, [hideHeader, showHeader])
+
+  // Carregar clubs da API
+  useEffect(() => {
+    loadClubs()
+  }, [])
+
+  const loadClubs = async () => {
+    setIsLoadingClubs(true)
+    try {
+      const clubsData = await clubService.getAllClubs()
+      setClubs(clubsData)
+    } catch (error) {
+      console.error('Erro ao carregar clubs:', error)
+      alert('Erro ao carregar clubs. Verifique se o servidor está rodando.')
+    } finally {
+      setIsLoadingClubs(false)
+    }
+  }
 
   const formatAddress = (address: string) => {
     if (address.length <= 12) return address
@@ -64,13 +78,9 @@ export default function AdminPanel() {
     { id: '4', name: 'Ana Oliveira', email: 'ana@email.com', membershipStatus: 'inactive', joinDate: '2024-01-05' },
   ])
   
-  // Mock data for clubs
-  const [clubs] = useState<Club[]>([
-    { id: '1', name: 'Yacht Owners Club', members: 128, status: 'active', createdDate: '2023-12-01' },
-    { id: '2', name: 'Sailing Enthusiasts', members: 256, status: 'active', createdDate: '2023-11-15' },
-    { id: '3', name: 'Mediterranean Cruisers', members: 89, status: 'active', createdDate: '2024-01-20' },
-    { id: '4', name: 'Ocean Explorers', members: 45, status: 'inactive', createdDate: '2024-02-10' },
-  ])
+  // Clubs data - carregado da API
+  const [clubs, setClubs] = useState<Club[]>([])
+  const [isLoadingClubs, setIsLoadingClubs] = useState(false)
 
   // Create Club Form State
   const [clubForm, setClubForm] = useState({
@@ -87,115 +97,183 @@ export default function AdminPanel() {
     setClubForm(prev => ({ ...prev, [field]: value }))
   }
 
-  const handleCreateClub = (e: React.FormEvent) => {
+  const handleCreateClub = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Here you would typically send the data to your backend
-    console.log('Creating club:', clubForm)
-    // Reset form after submission
-    setClubForm({
-      name: '',
-      description: '',
-      category: '',
-      maxMembers: '',
-      membershipFee: '',
-      location: '',
-      requirements: ''
-    })
-    alert('Club created successfully!')
+    
+    try {
+      // Preparar dados do club
+      const clubData: CreateClubData = {
+        name: clubForm.name,
+        description: clubForm.description,
+        category: clubForm.category,
+        maxMembers: clubForm.maxMembers ? parseInt(clubForm.maxMembers) : undefined,
+        membershipFee: clubForm.membershipFee ? parseFloat(clubForm.membershipFee) : undefined,
+        location: clubForm.location,
+        requirements: clubForm.requirements
+      }
+      
+      // Criar club via API
+      const newClub = await clubService.createClub(clubData)
+      
+      // Atualizar lista local
+      setClubs(prev => [...prev, newClub])
+      
+      // Reset form after submission
+      setClubForm({
+        name: '',
+        description: '',
+        category: '',
+        maxMembers: '',
+        membershipFee: '',
+        location: '',
+        requirements: ''
+      })
+      
+      // Switch to clubs tab to show the new club
+      setActiveTab('clubs')
+      
+      alert('Club criado com sucesso! Redirecionando para lista de clubs...')
+    } catch (error) {
+      console.error('Erro ao criar club:', error)
+      alert('Erro ao criar club. Tente novamente.')
+    }
+  }
+
+  const handleRemoveClub = async (clubId: string) => {
+    if (!confirm('Tem certeza que deseja remover este club?')) {
+      return
+    }
+    
+    try {
+      await clubService.deleteClub(clubId)
+      setClubs(prev => prev.filter(club => club.id !== clubId))
+      alert('Club removido com sucesso!')
+    } catch (error) {
+      console.error('Erro ao remover club:', error)
+      alert('Erro ao remover club. Tente novamente.')
+    }
   }
 
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'active': return 'text-green-400 bg-green-900/30'
-      case 'inactive': return 'text-red-400 bg-red-900/30'
+      case 'inactive': return 'text-gray-400 bg-gray-900/30'
       case 'pending': return 'text-yellow-400 bg-yellow-900/30'
       default: return 'text-gray-400 bg-gray-900/30'
     }
   }
 
   return (
-    <div className="min-h-screen bg-slate-900 text-white pt-20">
-      {/* Admin Header */}
-      <header className="bg-gray-800 border-b border-gray-700 px-6 py-4">
+    <div className="min-h-screen bg-premium-dark text-white overflow-hidden pt-20">
+      {/* Premium Floating Particles */}
+      <div className="absolute inset-0 z-0">
+        <div className="absolute top-20 left-10 w-2 h-2 bg-premium-gold rounded-full animate-pulse opacity-60" />
+        <div className="absolute top-40 right-20 w-1 h-1 bg-premium-gold rounded-full animate-pulse opacity-40" style={{animationDelay: '1s'}} />
+        <div className="absolute bottom-32 left-1/4 w-1.5 h-1.5 bg-premium-gold rounded-full animate-pulse opacity-50" style={{animationDelay: '2s'}} />
+        <div className="absolute top-1/3 right-1/3 w-1 h-1 bg-premium-gold rounded-full animate-pulse opacity-30" style={{animationDelay: '3s'}} />
+        <div className="absolute bottom-20 right-10 w-2 h-2 bg-premium-gold rounded-full animate-pulse opacity-70" style={{animationDelay: '4s'}} />
+      </div>
+      
+      {/* Premium Admin Header */}
+      <header className="relative z-10 bg-gradient-to-r from-premium-dark via-slate-900 to-premium-dark border-b border-premium-gold/20 px-6 py-6">
         <div className="flex items-center justify-between max-w-7xl mx-auto">
-          {/* Logo e Título */}
+          {/* Logo e Título Premium */}
           <div className="flex items-center space-x-4">
-            <h1 className="text-2xl font-bold text-white">
-              Capys Club - Admin
-            </h1>
-            <span className="px-3 py-1 bg-red-600 text-white text-xs font-semibold rounded-full">
+            <img 
+              src="/capys-logo.svg" 
+              alt="Capys Club" 
+              className="h-12 w-auto filter brightness-0 invert"
+            />
+            <span className="premium-title text-2xl">- Admin</span>
+            <span className="px-4 py-2 bg-premium-gold/20 text-premium-gold text-sm font-semibold rounded-full border border-premium-gold/30">
               ADMIN
             </span>
           </div>
 
-          {/* Navigation e Wallet */}
-          <div className="flex items-center space-x-6">
-            <nav className="flex items-center space-x-4">
+          {/* Centralized Navigation */}
+          <div className="flex items-center justify-center flex-1">
+            <nav className="flex items-center space-x-6">
+              <Button 
+                onClick={() => router.push('/')}
+                className="bg-yellow-600 hover:bg-yellow-700 text-white px-3 py-1 text-sm rounded-lg transition-colors duration-200 font-medium"
+              >
+                Home
+              </Button>
               <Button 
                 onClick={() => router.push(isDemoMode ? '/dashboard?demo=true' : '/dashboard')}
-                variant="outline"
-                className="border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white"
+                className="bg-yellow-600 hover:bg-yellow-700 text-white px-3 py-1 text-sm rounded-lg transition-colors duration-200 font-medium"
               >
                 Dashboard
               </Button>
               <Button 
-                onClick={() => router.push('/')}
-                variant="outline"
-                className="border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white"
+                className="bg-yellow-600 text-white px-3 py-1 text-sm rounded-lg font-medium cursor-default"
+                disabled
               >
-                Home
+                Admin
               </Button>
             </nav>
-            
-            {/* Wallet Connection */}
-            <div className="flex items-center space-x-4">
-              {isConnected && publicKey ? (
-                <div className="flex items-center space-x-3">
-                  <div className="text-sm text-gray-300">
-                    <span className="text-green-400">●</span> {formatAddress(publicKey)}
-                  </div>
-                  <ConnectButton className="px-4 py-2" />
+          </div>
+
+          {/* Wallet Connection */}
+          <div className="flex items-center space-x-4">
+            {isConnected && publicKey ? (
+              <div className="flex items-center space-x-3">
+                <div className="text-sm text-gray-300">
+                  <span className="text-green-400">●</span> {formatAddress(publicKey)}
                 </div>
-              ) : (
-                <ConnectButton />
-              )}
-            </div>
+                <ConnectButton className="px-4 py-2" />
+              </div>
+            ) : (
+              <ConnectButton />
+            )}
           </div>
         </div>
       </header>
 
-      {/* Main Content */}
-      <div className="p-8">
+      {/* Premium Main Content */}
+      <div className="relative z-10 p-8">
         <div className="max-w-7xl mx-auto space-y-8">
-          {/* Page Title */}
+          {/* Premium Page Title */}
           <div className="flex items-center justify-between">
-            <h2 className="text-4xl font-bold text-white">
-              Administrative Panel
+            <h2 className="premium-title text-3xl uppercase font-black">
+              Painel Administrativo
             </h2>
-            <div className="text-sm text-gray-400">
-              Manage users, clubs and platform analytics
+            <div className="premium-subtitle text-sm">
+              Gerencie usuários, clubs e análises da plataforma
             </div>
           </div>
 
-        {/* Navigation Tabs */}
-        <div className="flex border-b border-gray-700">
+        {/* Premium Navigation Buttons */}
+        <div className="flex gap-3 mb-8">
           <button 
-            className={`px-6 py-3 font-medium ${activeTab === 'users' ? 'text-blue-400 border-b-2 border-blue-400' : 'text-gray-400 hover:text-gray-300'}`}
+            className={`px-6 py-3 font-medium rounded-full transition-all duration-300 ${
+              activeTab === 'users' 
+                ? 'bg-premium-gold text-premium-dark shadow-lg shadow-premium-gold/20' 
+                : 'bg-slate-800/50 text-gray-300 hover:bg-premium-gold/20 hover:text-premium-gold border border-premium-gold/20'
+            }`}
             onClick={() => setActiveTab('users')}
           >
-            Users
+            👥 Usuários
           </button>
           <button 
-            className={`px-6 py-3 font-medium ${activeTab === 'clubs' ? 'text-blue-400 border-b-2 border-blue-400' : 'text-gray-400 hover:text-gray-300'}`}
+            className={`px-6 py-3 font-medium rounded-full transition-all duration-300 ${
+              activeTab === 'clubs' 
+                ? 'bg-premium-gold text-premium-dark shadow-lg shadow-premium-gold/20' 
+                : 'bg-slate-800/50 text-gray-300 hover:bg-premium-gold/20 hover:text-premium-gold border border-premium-gold/20'
+            }`}
             onClick={() => setActiveTab('clubs')}
           >
-            Clubs
+            🏛️ Clubs
           </button>
           <button 
-            className={`px-6 py-3 font-medium ${activeTab === 'create-club' ? 'text-blue-400 border-b-2 border-blue-400' : 'text-gray-400 hover:text-gray-300'}`}
+            className={`px-6 py-3 font-medium rounded-full transition-all duration-300 ${
+              activeTab === 'create-club' 
+                ? 'bg-premium-gold text-premium-dark shadow-lg shadow-premium-gold/20' 
+                : 'bg-slate-800/50 text-gray-300 hover:bg-premium-gold/20 hover:text-premium-gold border border-premium-gold/20'
+            }`}
             onClick={() => setActiveTab('create-club')}
           >
-            Create Club
+            Criar Club
           </button>
         </div>
 
@@ -203,7 +281,7 @@ export default function AdminPanel() {
         {activeTab === 'users' && (
           <div className="space-y-6">
             <div className="flex items-center justify-between">
-              <h2 className="text-2xl font-bold text-white">Manage Users</h2>
+              <h2 className="text-2xl font-impact font-black text-white uppercase">Manage Users</h2>
               <div className="text-sm text-gray-400">
                 Total: {users.length} users
               </div>
@@ -213,19 +291,19 @@ export default function AdminPanel() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
               <div className="bg-gray-800 p-6 rounded-lg">
                 <h3 className="text-lg font-semibold text-white mb-2">Active Users</h3>
-                <p className="text-3xl font-bold text-green-400">{users.filter(u => u.membershipStatus === 'active').length}</p>
+                <p className="text-2xl font-bold text-green-400">{users.filter(u => u.membershipStatus === 'active').length}</p>
                 <p className="text-sm text-gray-400 mt-1">Confirmed members</p>
               </div>
               
               <div className="bg-gray-800 p-6 rounded-lg">
                 <h3 className="text-lg font-semibold text-white mb-2">Pending</h3>
-                <p className="text-3xl font-bold text-yellow-400">{users.filter(u => u.membershipStatus === 'pending').length}</p>
+                <p className="text-2xl font-bold text-yellow-400">{users.filter(u => u.membershipStatus === 'pending').length}</p>
                 <p className="text-sm text-gray-400 mt-1">Awaiting approval</p>
               </div>
               
               <div className="bg-gray-800 p-6 rounded-lg">
                 <h3 className="text-lg font-semibold text-white mb-2">Inactive</h3>
-                <p className="text-3xl font-bold text-red-400">{users.filter(u => u.membershipStatus === 'inactive').length}</p>
+                <p className="text-2xl font-bold text-gray-400">{users.filter(u => u.membershipStatus === 'inactive').length}</p>
                 <p className="text-sm text-gray-400 mt-1">Suspended members</p>
               </div>
             </div>
@@ -254,8 +332,8 @@ export default function AdminPanel() {
                       </td>
                       <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-300">{formatDate(user.joinDate)}</td>
                       <td className="px-4 py-4 whitespace-nowrap text-sm font-medium">
-                        <button className="text-blue-400 hover:text-blue-300 mr-2">Edit</button>
-                        <button className="text-red-400 hover:text-red-300">Remove</button>
+                        <button className="text-yellow-400 hover:text-yellow-300 mr-2">Edit</button>
+                        <button className="text-gray-400 hover:text-gray-300">Remove</button>
                       </td>
                     </tr>
                   ))}
@@ -270,9 +348,9 @@ export default function AdminPanel() {
         {activeTab === 'clubs' && (
           <div className="space-y-6">
             <div className="flex items-center justify-between">
-              <h2 className="text-2xl font-bold text-white">Manage Clubs</h2>
+              <h2 className="text-2xl font-impact font-black text-white uppercase">Manage Clubs</h2>
               <div className="text-sm text-gray-400">
-                Total: {clubs.length} clubs
+                Total: {clubs.length} clubs {isLoadingClubs && '(Carregando...)'}
               </div>
             </div>
             
@@ -280,13 +358,13 @@ export default function AdminPanel() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
               <div className="bg-gray-800 p-6 rounded-lg">
                 <h3 className="text-lg font-semibold text-white mb-2">Total Members</h3>
-                <p className="text-3xl font-bold text-blue-400">{clubs.reduce((acc, club) => acc + club.members, 0)}</p>
+                <p className="text-2xl font-bold text-blue-400">{clubs.reduce((acc, club) => acc + club.members, 0)}</p>
                 <p className="text-sm text-gray-400 mt-1">Across all groups</p>
               </div>
               
               <div className="bg-gray-800 p-6 rounded-lg">
                 <h3 className="text-lg font-semibold text-white mb-2">Number of Groups</h3>
-                <p className="text-3xl font-bold text-green-400">{clubs.length}</p>
+                <p className="text-2xl font-bold text-green-400">{clubs.length}</p>
                 <p className="text-sm text-gray-400 mt-1">Groups created</p>
               </div>
             </div>
@@ -296,18 +374,56 @@ export default function AdminPanel() {
                 <table className="w-full">
                   <thead className="bg-gray-700">
                     <tr>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider w-1/4">Club Name</th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider w-1/6">Members</th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider w-1/6">Status</th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider w-1/4">Creation Date</th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider w-1/6">Actions</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Club Name</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Category</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Location</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Members</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Fee (USD)</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Status</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Creation Date</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Actions</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-700">
                     {clubs.map((club) => (
                       <tr key={club.id} className="hover:bg-gray-700/50">
-                        <td className="px-4 py-4 whitespace-nowrap text-sm font-medium text-white">{club.name}</td>
-                        <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-300">{club.members}</td>
+                        <td className="px-4 py-4 whitespace-nowrap text-sm font-medium text-white">
+                          <div>
+                            <div className="font-medium">{club.name}</div>
+                            {club.description && (
+                              <div className="text-xs text-gray-400 mt-1 truncate max-w-xs" title={club.description}>
+                                {club.description}
+                              </div>
+                            )}
+                          </div>
+                        </td>
+                        <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-300">
+                          {club.category ? (
+                            <span className="inline-flex px-2 py-1 text-xs font-medium bg-blue-900/30 text-blue-400 rounded-full">
+                              {club.category}
+                            </span>
+                          ) : (
+                            <span className="text-gray-500">-</span>
+                          )}
+                        </td>
+                        <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-300">
+                          {club.location || <span className="text-gray-500">-</span>}
+                        </td>
+                        <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-300">
+                          <div>
+                            <div>{club.members}</div>
+                            {club.maxMembers && (
+                              <div className="text-xs text-gray-500">/ {club.maxMembers} max</div>
+                            )}
+                          </div>
+                        </td>
+                        <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-300">
+                          {club.membershipFee ? (
+                            <span className="font-medium">${club.membershipFee}</span>
+                          ) : (
+                            <span className="text-green-400">Free</span>
+                          )}
+                        </td>
                         <td className="px-4 py-4 whitespace-nowrap">
                           <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(club.status)}`}>
                             {club.status}
@@ -315,8 +431,13 @@ export default function AdminPanel() {
                         </td>
                         <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-300">{formatDate(club.createdDate)}</td>
                         <td className="px-4 py-4 whitespace-nowrap text-sm font-medium">
-                          <button className="text-blue-400 hover:text-blue-300 mr-2">Edit</button>
-                          <button className="text-red-400 hover:text-red-300">Remove</button>
+                          <button className="text-yellow-400 hover:text-yellow-300 mr-2">Edit</button>
+                          <button 
+                            className="text-gray-400 hover:text-gray-300"
+                            onClick={() => handleRemoveClub(club.id)}
+                          >
+                            Remove
+                          </button>
                         </td>
                       </tr>
                     ))}
@@ -331,7 +452,7 @@ export default function AdminPanel() {
         {activeTab === 'create-club' && (
           <div className="space-y-6">
             <div className="flex items-center justify-between">
-              <h2 className="text-2xl font-bold text-white">Create New Club</h2>
+              <h2 className="text-2xl font-impact font-black text-white uppercase">Create New Club</h2>
               <div className="text-sm text-gray-400">
                 Fill in the details to create a new club
               </div>
@@ -470,7 +591,7 @@ export default function AdminPanel() {
                   </button>
                   <button
                     type="submit"
-                    className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="px-6 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-yellow-500"
                   >
                     Create Club
                   </button>

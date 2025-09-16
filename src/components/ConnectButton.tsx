@@ -30,8 +30,8 @@ export default function ConnectButton({ className }: ConnectButtonProps) {
   if (isConnected) {
     return (
       <Button
-        onClick={disconnect}
-        className={`bg-red-600 hover:bg-red-700 text-white font-semibold px-6 py-3 rounded-lg transition-colors duration-200 ${className ?? ''}`}
+        onClick={() => disconnect()}
+        className={`bg-yellow-600 hover:bg-yellow-700 text-white font-semibold px-6 py-3 rounded-lg transition-colors duration-200 ${className ?? ''}`}
       >
         Disconnect
       </Button>
@@ -43,7 +43,7 @@ export default function ConnectButton({ className }: ConnectButtonProps) {
       <Button
         onClick={handleConnectClick}
         disabled={isLoading}
-        className={`bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white font-semibold px-6 py-3 rounded-lg transition-colors duration-200 ${className ?? ''}`}
+        className={`bg-yellow-600 hover:bg-yellow-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white font-semibold px-6 py-3 rounded-lg transition-colors duration-200 ${className ?? ''}`}
       >
         {isLoading ? 'Connecting...' : 'Connect Wallet'}
       </Button>

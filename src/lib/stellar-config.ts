@@ -68,10 +68,15 @@ export const getStellarConfig = () => {
 export const validateStellarNetwork = async () => {
   try {
     const config = getStellarConfig()
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), config.timeout.connection)
+    
     const response = await fetch(`${config.horizonUrl}/`, {
       method: 'GET',
-      timeout: config.timeout.connection
+      signal: controller.signal
     })
+    
+    clearTimeout(timeoutId)
     return response.ok
   } catch (error) {
     console.error('Erro ao validar rede Stellar:', error)

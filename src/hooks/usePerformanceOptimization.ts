@@ -23,7 +23,7 @@ export function useDebounce<T>(value: T, delay: number): T {
 export function useThrottle<T extends (...args: any[]) => any>(
   fn: T,
   delay: number
-): T {
+) {
   const throttledFn = useMemo(
     () => throttle(fn, delay, { leading: true, trailing: true }),
     [fn, delay]
@@ -35,7 +35,7 @@ export function useThrottle<T extends (...args: any[]) => any>(
     }
   }, [throttledFn])
 
-  return throttledFn as T
+  return throttledFn
 }
 
 // Hook para memoização com cache personalizado
@@ -82,9 +82,9 @@ export function useLazyComponent<T extends React.ComponentType<any>>(
     setError(null)
 
     try {
-      const module = await importFn()
+      const moduleResult = await importFn()
       if (mountedRef.current) {
-        setComponent(() => module.default)
+        setComponent(() => moduleResult.default)
       }
     } catch (err) {
       if (mountedRef.current) {

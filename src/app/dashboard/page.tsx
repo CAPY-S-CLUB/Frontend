@@ -7,7 +7,7 @@ import { getUserProfile, NFTMetadata, BadgeMetadata } from '@/lib/stellar'
 import LoadingSpinner from '@/components/LoadingSpinner'
 import { Button } from '@/components/ui/button'
 import { useRouter } from 'next/navigation'
-import ProtectedRoute from '@/components/ProtectedRoute'
+
 
 interface UserProfile {
   hasMembership: boolean
@@ -47,21 +47,25 @@ function DashboardContent() {
           setUserProfile({
             hasMembership: true,
             membershipNFT: {
-                name: `Capys Club Membership - ${user?.username}`,
-                description: 'Exclusive membership NFT for Capys Club (Demo Mode)',
-                image: 'https://via.placeholder.com/300x300?text=Demo+NFT',
-                attributes: []
-              },
+              name: `Capys Club Membership - ${user?.username}`,
+              description: 'Exclusive membership NFT for Capys Club (Demo Mode)',
+              image: 'https://via.placeholder.com/300x300?text=Demo+NFT',
+              attributes: []
+            },
             badges: [
               {
                 name: 'Early Adopter',
                 description: 'One of the first members',
-                image: 'https://via.placeholder.com/100x100?text=Badge1'
+                image: 'https://via.placeholder.com/100x100?text=Badge1',
+                rarity: 'rare',
+                category: 'membership'
               },
               {
                 name: 'Yacht Owner',
                 description: 'Verified yacht owner',
-                image: 'https://via.placeholder.com/100x100?text=Badge2'
+                image: 'https://via.placeholder.com/100x100?text=Badge2',
+                rarity: 'epic',
+                category: 'ownership'
               }
             ],
             totalBadges: 2
@@ -112,7 +116,7 @@ function DashboardContent() {
     return (
       <div className="min-h-screen bg-slate-900 text-white p-8 flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-4xl font-bold text-red-400 mb-4">Access Denied</h1>
+          <h1 className="text-3xl font-bold text-red-400 mb-4">Access Denied</h1>
           <p className="text-xl text-gray-300">Please connect your wallet to access the dashboard</p>
         </div>
       </div>
@@ -133,7 +137,7 @@ function DashboardContent() {
     return (
       <div className="min-h-screen bg-slate-900 text-white p-8 flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-4xl font-bold text-red-400 mb-4">Access Denied</h1>
+          <h1 className="text-3xl font-bold text-red-400 mb-4">Access Denied</h1>
           <p className="text-xl text-gray-300 mb-6">You need a Capys Club membership NFT to access this dashboard</p>
           <div className="bg-gray-800 rounded-lg p-6 max-w-md mx-auto">
             <p className="text-sm text-gray-400">
@@ -163,7 +167,7 @@ function DashboardContent() {
     <div className="min-h-screen bg-slate-900 text-white p-8">
       <div className="max-w-6xl mx-auto space-y-8">
         <div className="flex items-center justify-between">
-          <h1 className="text-4xl font-bold text-white">
+          <h1 className="text-3xl font-bold text-white">
             Dashboard
           </h1>
           {isDemoMode && (
@@ -177,27 +181,27 @@ function DashboardContent() {
         </div>
 
         {/* Navigation Tabs */}
-        <div className="flex border-b border-gray-700">
+        <div className="flex gap-4 mb-6">
           <button 
-            className={`px-4 py-2 font-medium ${activeTab === 'membership' ? 'text-blue-400 border-b-2 border-blue-400' : 'text-gray-400 hover:text-gray-300'}`}
+            className={`px-6 py-3 font-medium rounded-full transition-all duration-300 ${activeTab === 'membership' ? 'bg-blue-600 hover:bg-blue-700 text-white bg-gradient-to-r from-blue-600 to-blue-700 border border-blue-500' : 'bg-slate-800/50 text-gray-300 hover:bg-blue-600/20 hover:text-blue-400 border border-blue-500/20'}`}
             onClick={() => setActiveTab('membership')}
           >
             Membership
           </button>
           <button 
-            className={`px-4 py-2 font-medium ${activeTab === 'clubs' ? 'text-blue-400 border-b-2 border-blue-400' : 'text-gray-400 hover:text-gray-300'}`}
+            className={`px-6 py-3 font-medium rounded-full transition-all duration-300 ${activeTab === 'clubs' ? 'bg-blue-600 hover:bg-blue-700 text-white bg-gradient-to-r from-blue-600 to-blue-700 border border-blue-500' : 'bg-slate-800/50 text-gray-300 hover:bg-blue-600/20 hover:text-blue-400 border border-blue-500/20'}`}
             onClick={() => setActiveTab('clubs')}
           >
             My Clubs
           </button>
           <button 
-            className={`px-4 py-2 font-medium ${activeTab === 'discover' ? 'text-blue-400 border-b-2 border-blue-400' : 'text-gray-400 hover:text-gray-300'}`}
+            className={`px-6 py-3 font-medium rounded-full transition-all duration-300 ${activeTab === 'discover' ? 'bg-blue-600 hover:bg-blue-700 text-white bg-gradient-to-r from-blue-600 to-blue-700 border border-blue-500' : 'bg-slate-800/50 text-gray-300 hover:bg-blue-600/20 hover:text-blue-400 border border-blue-500/20'}`}
             onClick={() => setActiveTab('discover')}
           >
             Discover
           </button>
           <button 
-            className={`px-4 py-2 font-medium ${activeTab === 'admin' ? 'text-blue-400 border-b-2 border-blue-400' : 'text-gray-400 hover:text-gray-300'}`}
+            className={`px-6 py-3 font-medium rounded-full transition-all duration-300 ${activeTab === 'admin' ? 'bg-blue-600 hover:bg-blue-700 text-white bg-gradient-to-r from-blue-600 to-blue-700 border border-blue-500' : 'bg-slate-800/50 text-gray-300 hover:bg-blue-600/20 hover:text-blue-400 border border-blue-500/20'}`}
             onClick={() => router.push(isDemoMode ? '/admin?demo=true' : '/admin')}
           >
             Admin
@@ -207,7 +211,7 @@ function DashboardContent() {
         {/* Membership Tab Content */}
         {activeTab === 'membership' && (
           <section className="space-y-6">
-            <h2 className="text-2xl font-bold text-white">
+            <h2 className="text-2xl font-black text-white">
               My Membership Card
             </h2>
             
@@ -249,7 +253,7 @@ function DashboardContent() {
               <div className="flex justify-center">
                 <div className="w-64 h-96 border-2 border-gray-600 rounded-lg bg-gray-800 flex items-center justify-center">
                   <div className="text-center text-gray-400">
-                    <div className="text-6xl mb-4">🖼️</div>
+                    <div className="text-4xl mb-4">🖼️</div>
                     <p className="text-lg">Loading NFT...</p>
                   </div>
                 </div>
@@ -259,7 +263,7 @@ function DashboardContent() {
             {/* My Achievements Section */}
             <div className="space-y-6">
               <div className="flex items-center justify-between">
-                <h2 className="text-3xl font-bold text-white">
+                <h2 className="text-2xl font-black text-white">
                   My Achievements
                 </h2>
                 <div className="text-sm text-gray-400">
@@ -295,8 +299,16 @@ function DashboardContent() {
                         </p>
                         
                         <div className="flex items-center justify-between">
-                          <span className="text-xs px-2 py-1 rounded-full bg-gray-600 text-gray-200">
-                            Badge
+                          <span className={`text-xs px-2 py-1 rounded-full ${
+                            badge.rarity === 'Common' ? 'bg-gray-600 text-gray-200' :
+                            badge.rarity === 'Rare' ? 'bg-yellow-600 text-yellow-200' :
+                            badge.rarity === 'Epic' ? 'bg-purple-600 text-purple-200' :
+                            'bg-yellow-600 text-yellow-200'
+                          }`}>
+                            {badge.rarity}
+                          </span>
+                          <span className="text-xs text-gray-500">
+                            {badge.category}
                           </span>
                         </div>
                       </div>
@@ -307,7 +319,7 @@ function DashboardContent() {
                 </div>
               ) : (
                 <div className="text-center py-12">
-                  <div className="text-6xl mb-4">🏆</div>
+                  <div className="text-4xl mb-4">🏆</div>
                   <h3 className="text-xl font-semibold text-gray-400 mb-2">No Achievements Yet</h3>
                   <p className="text-gray-500">Complete tasks and activities to earn your first badge!</p>
                 </div>
@@ -319,11 +331,11 @@ function DashboardContent() {
         {/* My Clubs Tab Content */}
         {activeTab === 'clubs' && (
           <section className="space-y-6">
-            <h2 className="text-2xl font-bold text-white">
+            <h2 className="text-2xl font-black text-white">
               My Clubs
             </h2>
             <div className="text-center py-12">
-              <div className="text-6xl mb-4">🏛️</div>
+              <div className="text-4xl mb-4">🏛️</div>
               <h3 className="text-xl font-semibold text-gray-400 mb-2">No Clubs Joined Yet</h3>
               <p className="text-gray-500">Join clubs to connect with like-minded members!</p>
             </div>
@@ -333,11 +345,11 @@ function DashboardContent() {
         {/* Discover Tab Content */}
         {activeTab === 'discover' && (
           <section className="space-y-6">
-            <h2 className="text-2xl font-bold text-white">
+            <h2 className="text-2xl font-black text-white">
               Discover Clubs
             </h2>
             <div className="text-center py-12">
-              <div className="text-6xl mb-4">🔍</div>
+              <div className="text-4xl mb-4">🔍</div>
               <h3 className="text-xl font-semibold text-gray-400 mb-2">Explore New Communities</h3>
               <p className="text-gray-500">Find clubs that match your interests and passions!</p>
             </div>
@@ -350,9 +362,5 @@ function DashboardContent() {
 }
 
 export default function Dashboard() {
-  return (
-    <ProtectedRoute>
-      <DashboardContent />
-    </ProtectedRoute>
-  )
+  return <DashboardContent />
 }

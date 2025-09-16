@@ -101,7 +101,7 @@ const FormField: React.FC<{
       autoComplete: config.autoComplete,
       className: cn(
         'transition-colors',
-        hasError && 'border-red-500 focus:border-red-500',
+        hasError && 'border-gray-500 focus:border-gray-500',
         isValid && 'border-green-500 focus:border-green-500'
       )
     }
@@ -169,19 +169,19 @@ const FormField: React.FC<{
         htmlFor={config.name}
         className={cn(
           'text-sm font-medium',
-          hasError && 'text-red-600',
+          hasError && 'text-gray-600',
           isValid && 'text-green-600'
         )}
       >
         {config.label}
-        {config.required && <span className="text-red-500 ml-1">*</span>}
+        {config.required && <span className="text-gray-500 ml-1">*</span>}
         {isValid && <CheckCircle2 className="inline w-4 h-4 ml-1 text-green-600" />}
       </Label>
       
       <div className="relative">
         {renderInput()}
         {hasError && (
-          <AlertCircle className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-red-500" />
+          <AlertCircle className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-500" />
         )}
       </div>
       
@@ -194,7 +194,7 @@ const FormField: React.FC<{
       {hasError && (
         <div className="space-y-1">
           {error.map((err, index) => (
-            <p key={index} className="text-xs text-red-600 flex items-center gap-1">
+            <p key={index} className="text-xs text-gray-600 flex items-center gap-1">
               <AlertCircle className="w-3 h-3" />
               {err}
             </p>
@@ -240,7 +240,12 @@ export function ValidatedForm<T extends Record<string, any>>({
     initialValues: initialValues as T,
     validationSchema: (values: T) => {
       const result = validateAll(values)
-      return result.errors
+      // Convert string[] to string for each field
+      const errors: Record<string, string> = {}
+      Object.entries(result.errors).forEach(([key, value]) => {
+        errors[key] = Array.isArray(value) ? value.join(', ') : value
+      })
+      return errors
     },
     onSubmit
   })
@@ -304,7 +309,7 @@ export function ValidatedForm<T extends Record<string, any>>({
         <Alert className={cn(
           'mb-4',
           autoSaveStatus === 'saved' && 'border-green-200 bg-green-50',
-          autoSaveStatus === 'error' && 'border-red-200 bg-red-50'
+          autoSaveStatus === 'error' && 'border-gray-200 bg-gray-50'
         )}>
           <AlertDescription className="flex items-center gap-2">
             {autoSaveStatus === 'saving' && (
@@ -321,7 +326,7 @@ export function ValidatedForm<T extends Record<string, any>>({
             )}
             {autoSaveStatus === 'error' && (
               <>
-                <AlertCircle className="w-4 h-4 text-red-600" />
+                <AlertCircle className="w-4 h-4 text-gray-600" />
                 Erro ao salvar automaticamente
               </>
             )}
@@ -380,7 +385,7 @@ export function ValidatedForm<T extends Record<string, any>>({
           <p>Preencha os campos para validar o formulário</p>
         )}
         {Object.keys(touched).length > 0 && hasErrors && (
-          <p className="text-red-600">Corrija os erros antes de enviar</p>
+          <p className="text-gray-600">Corrija os erros antes de enviar</p>
         )}
         {isFormValid && (
           <p className="text-green-600 flex items-center gap-1">

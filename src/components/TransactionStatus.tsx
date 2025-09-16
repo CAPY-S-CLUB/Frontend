@@ -22,7 +22,7 @@ export default function TransactionStatus({ status, onClose }: TransactionStatus
         )
       case 'error':
         return (
-          <div className="rounded-full h-6 w-6 bg-red-500 flex items-center justify-center">
+          <div className="rounded-full h-6 w-6 bg-gray-500 flex items-center justify-center">
             <svg className="h-4 w-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
@@ -34,11 +34,11 @@ export default function TransactionStatus({ status, onClose }: TransactionStatus
   const getStatusColor = () => {
     switch (status.status) {
       case 'pending':
-        return 'border-blue-500 bg-blue-50 text-blue-800'
+        return 'border-yellow-500 bg-yellow-50 text-yellow-800'
       case 'success':
         return 'border-green-500 bg-green-50 text-green-800'
       case 'error':
-        return 'border-red-500 bg-red-50 text-red-800'
+        return 'border-gray-500 bg-gray-50 text-gray-800'
     }
   }
 
@@ -73,7 +73,7 @@ export default function TransactionStatus({ status, onClose }: TransactionStatus
               </p>
             )}
             {status.error && (
-              <p className="mt-2 text-xs text-red-600">
+              <p className="mt-2 text-xs text-gray-600">
                 Erro: {status.error}
               </p>
             )}

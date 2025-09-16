@@ -33,60 +33,51 @@ export default function CadastroPage() {
   }
 
   return (
-    <main className="relative min-h-screen text-white w-full">
-      <div
-        className="absolute inset-0 z-0"
-        style={{
-          backgroundImage:
-            "url('https://images.unsplash.com/photo-1501630834273-4b5604d2ee31?q=80&w=2000&auto=format&fit=crop')",
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
-        }}
-      />
-      <div className="absolute inset-0 z-10 bg-black/60" />
+    <main className="relative min-h-screen text-white w-full bg-premium-dark overflow-hidden">
+      {/* Premium Floating Particles */}
+      <div className="absolute inset-0 z-0">
+        <div className="absolute top-20 left-10 w-2 h-2 bg-premium-gold rounded-full animate-pulse opacity-60" />
+        <div className="absolute top-40 right-20 w-1 h-1 bg-premium-gold rounded-full animate-pulse opacity-40" style={{animationDelay: '1s'}} />
+        <div className="absolute bottom-32 left-1/4 w-1.5 h-1.5 bg-premium-gold rounded-full animate-pulse opacity-50" style={{animationDelay: '2s'}} />
+        <div className="absolute top-1/3 right-1/3 w-1 h-1 bg-premium-gold rounded-full animate-pulse opacity-30" style={{animationDelay: '3s'}} />
+        <div className="absolute bottom-20 right-10 w-2 h-2 bg-premium-gold rounded-full animate-pulse opacity-70" style={{animationDelay: '4s'}} />
+      </div>
+      
+      {/* Premium Background Gradient */}
+      <div className="absolute inset-0 z-10 bg-gradient-to-br from-premium-dark via-slate-900 to-premium-dark opacity-95" />
+      
       <div className="relative z-20 flex flex-col items-center justify-center h-full w-full text-center p-4 sm:p-8">
         <div className="max-w-md w-full space-y-8">
-          <div>
-            <h1 className="text-4xl font-bold tracking-tight mb-4">Welcome to Meridian</h1>
-            <p className="text-xl text-gray-300 mb-8">
-              {showOptions ? 'Choose how you want to access the platform' : 'The private community for the most discerning yacht owners'}
+          {/* Premium Header */}
+          <div className="text-center">
+            <h1 className="premium-title mb-4">Welcome to Meridian</h1>
+            <p className="premium-subtitle mb-8">
+              {showOptions ? 'Escolha como deseja acessar a plataforma' : 'A comunidade privada para os proprietários de iates mais exigentes'}
             </p>
           </div>
           
-          {!showOptions ? (
-            <div className="space-y-4">
-              <Button
-                onClick={handleGetStarted}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-4 rounded-lg transition-colors duration-200 text-lg"
-              >
-                Get Started
-              </Button>
-            </div>
-          ) : (
-            <div className="space-y-4">
-              <Button
-                onClick={handleConnectWallet}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-4 rounded-lg transition-colors duration-200 text-lg"
-              >
-                Connect Wallet
-              </Button>
+          <div className="space-y-6">
+            <Button
+              onClick={handleConnectWallet}
+              className="premium-button w-full px-8 py-4 text-lg font-bold rounded-full transition-all duration-300 transform hover:scale-105"
+            >
+              CONECTAR CARTEIRA
+            </Button>
               
               <Button
                 onClick={handleCreateWallet}
-                className="w-full bg-green-600 hover:bg-green-700 text-white font-medium px-4 py-2 rounded-lg transition-colors duration-200 text-sm"
+                className="w-full bg-premium-gold/10 border border-premium-gold text-premium-gold hover:bg-premium-gold hover:text-premium-dark font-medium px-6 py-3 rounded-full transition-all duration-300"
               >
-                Create Wallet
+                Criar Nova Carteira
               </Button>
             </div>
-          )}
           
-          <div className="pt-4">
+          <div className="pt-6">
             <Button
               onClick={handleBack}
-              className="text-gray-300 hover:text-white underline bg-transparent hover:bg-transparent"
+              className="premium-subtitle hover:text-premium-gold underline bg-transparent hover:bg-transparent transition-colors duration-300"
             >
-              {showOptions ? 'Back' : 'Back to Home'}
+              {showOptions ? 'Voltar' : 'Voltar ao Início'}
             </Button>
           </div>
         </div>

@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import DOMPurify from 'dompurify'
+import { useState, useCallback } from 'react'
 
 // Tipos de validação
 export enum ValidationType {
@@ -144,7 +145,7 @@ export class FormValidator {
       if (error instanceof z.ZodError) {
         const errors: Record<string, string[]> = {}
         
-        error.errors.forEach(err => {
+        error.issues.forEach((err: any) => {
           const path = err.path.join('.')
           if (!errors[path]) {
             errors[path] = []
@@ -217,7 +218,7 @@ export class FormValidator {
     }
 
     // Verificar pattern do tipo
-    const pattern = VALIDATION_PATTERNS[type]
+    const pattern = VALIDATION_PATTERNS[type as keyof typeof VALIDATION_PATTERNS]
     if (pattern && !pattern.test(value)) {
       return { isValid: false, error: this.getErrorMessage(type) }
     }
@@ -342,7 +343,7 @@ export class DataSanitizer {
     obj: T,
     sanitizers: Partial<Record<keyof T, (value: any) => any>>
   ): T {
-    const sanitized = { ...obj }
+    const sanitized = { ...obj } as any
     
     Object.entries(sanitizers).forEach(([key, sanitizer]) => {
       if (sanitizer && sanitized[key] !== undefined) {
@@ -364,7 +365,7 @@ export function useFormValidation<T extends Record<string, any>>(
   const validateField = useCallback((name: string, value: any) => {
     try {
       // Validar apenas o campo específico
-      const fieldSchema = schema.shape?.[name]
+      const fieldSchema = (schema as any).shape?.[name]
       if (fieldSchema) {
         fieldSchema.parse(value)
         setErrors(prev => {
@@ -375,9 +376,9 @@ export function useFormValidation<T extends Record<string, any>>(
       }
     } catch (error) {
       if (error instanceof z.ZodError) {
-        setErrors(prev => ({
+        setErrors((prev: any) => ({
           ...prev,
-          [name]: error.errors.map(err => err.message)
+          [name]: error.issues.map((err: any) => err.message)
         }))
       }
     }
@@ -388,7 +389,7 @@ export function useFormValidation<T extends Record<string, any>>(
   }, [schema])
   
   const markTouched = useCallback((name: string) => {
-    setTouched(prev => ({ ...prev, [name]: true }))
+    setTouched((prev: any) => ({ ...prev, [name]: true }))
   }, [])
   
   const clearErrors = useCallback(() => {

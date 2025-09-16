@@ -7,12 +7,26 @@ module.exports = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        'impact': ['Impact', 'Arial Black', 'sans-serif'],
+        'bebas': ['Bebas Neue', 'Impact', 'Arial Black', 'sans-serif'],
+        'oswald': ['Oswald', 'Impact', 'Arial Black', 'sans-serif'],
+        'poppins': ['Poppins', 'sans-serif'],
+      },
       colors: {
         gold: {
           300: '#fde047',
           400: '#facc15',
           500: '#eab308',
           600: '#ca8a04',
+        },
+        'dark-blue': {
+          400: '#1e3a8a',
+          500: '#1e40af',
+          600: '#1d4ed8',
+          700: '#1e3a8a',
+          800: '#1e293b',
+          900: '#0f172a',
         },
       },
       backgroundImage: {
