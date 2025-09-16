@@ -180,7 +180,7 @@ export default function AdminPanel() {
           {/* Logo e Título Premium */}
           <div className="flex items-center space-x-4">
             <img 
-              src="/capys-logo.svg" 
+              src="/capys-logo.jpeg" 
               alt="Capys Club" 
               className="h-12 w-auto filter brightness-0 invert"
             />
