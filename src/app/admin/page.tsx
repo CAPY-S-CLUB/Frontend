@@ -236,7 +236,7 @@ function AdminPanelContent() {
           {/* Premium Page Title */}
           <div className="flex items-center justify-between">
             <h2 className="premium-title text-3xl uppercase font-black">
-              Painel Administrativo
+              Administrative Panel
             </h2>
             <div className="premium-subtitle text-sm">
               Gerencie usuários, clubs e análises da plataforma

@@ -3,7 +3,7 @@ import { WalletProvider } from '@/lib/WalletProvider'
 
 export const metadata: Metadata = {
   title: 'Admin Panel - Capys Club',
-  description: 'Painel administrativo do Capys Club',
+  description: 'Administrative panel for Capys Club',
 }
 
 export default function AdminLayout({
