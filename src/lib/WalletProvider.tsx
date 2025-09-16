@@ -185,7 +185,6 @@ export function WalletProvider({ children }: WalletProviderProps) {
   const value: WalletContextType = {
     isConnected: isWalletConnected,
     publicKey,
-    connect,
     connectWithWallet,
     disconnect,
     isLoading,

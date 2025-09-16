@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { useWallet } from '@/lib/WalletProvider'
@@ -19,7 +19,7 @@ interface User {
 // Usando interface do clubService
 type Club = ApiClub
 
-export default function AdminPanel() {
+function AdminPanelContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const isDemoMode = searchParams.get('demo') === 'true'
@@ -604,5 +604,13 @@ export default function AdminPanel() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function AdminPanel() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <AdminPanelContent />
+    </Suspense>
   )
 }
